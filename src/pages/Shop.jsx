@@ -456,7 +456,7 @@ const Shop = () => {
               <Sparkles size={12} /> Premium Collection
            </motion.div>
            
-           <motion.h1 
+           {/* <motion.h1 
              initial={{ opacity: 0, y: 20 }} 
              animate={{ opacity: 1, y: 0 }}
              transition={{ delay: 0.1 }}
@@ -472,7 +472,7 @@ const Shop = () => {
              className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
            >
              Engineered for peak performance. Explore our collection of high-purity alkaloids and advanced formulations.
-           </motion.p>
+           </motion.p> */}
         </div>
       </div>
 
