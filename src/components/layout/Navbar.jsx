@@ -380,33 +380,70 @@ const Navbar = () => {
               //     )}
               //   </NavLink>
               // ))
+              // navLinks.map((link) => (
+              //   <NavLink
+              //     key={link.id || link.path}
+              //     to={link.path}
+              //     className={({ isActive }) =>
+              //       clsx(
+              //         "relative px-6 py-2 text-xs font-bold uppercase tracking-widest transition-colors duration-300 z-10 flex items-center gap-2",
+              //         isActive ? "text-white" : "text-slate-400 hover:text-white"
+              //       )
+              //     }
+              //   >
+              //     {/* Wrap content in a function to access isActive */}
+              //     {({ isActive }) => (
+              //       <>
+              //         <span className="text-lg font-bold tracking-wide">{link.label}</span>
+              //         <ChevronRight
+              //           size={16}
+              //           className={isActive ? "text-brand-glow" : "opacity-30"}
+              //         />
+              //         {/* If you want the animated background pill back, add it here: */}
+              //         {isActive && (
+              //           <motion.div
+              //             layoutId="activeTab"
+              //             className="absolute inset-0 bg-gradient-to-r from-brand-glow/20 to-blue-500/20 rounded-full -z-10 border border-brand-glow/50"
+              //             transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+              //           />
+              //         )}
+              //       </>
+              //     )}
+              //   </NavLink>
+              // ))
               navLinks.map((link) => (
-                <NavLink
-                  key={link.id || link.path}
+                <NavLink 
+                  key={link.id || link.path} 
                   to={link.path}
-                  className={({ isActive }) =>
-                    clsx(
-                      "relative px-6 py-2 text-xs font-bold uppercase tracking-widest transition-colors duration-300 z-10 flex items-center gap-2",
-                      isActive ? "text-white" : "text-slate-400 hover:text-white"
-                    )
-                  }
+                  // We use a function here to handle the text color change
+                  className={({ isActive }) => clsx(
+                    "relative px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 z-10 flex items-center gap-2",
+                    isActive ? "text-dark-900" : "text-slate-400 hover:text-white"
+                  )}
                 >
-                  {/* Wrap content in a function to access isActive */}
+                  {/* Use a function child to access isActive for the icon and the motion div */}
                   {({ isActive }) => (
                     <>
-                      <span className="text-lg font-bold tracking-wide">{link.label}</span>
-                      <ChevronRight
-                        size={16}
-                        className={isActive ? "text-brand-glow" : "opacity-30"}
-                      />
-                      {/* If you want the animated background pill back, add it here: */}
+                      {/* 1. The Animated Background Pill */}
                       {isActive && (
                         <motion.div
                           layoutId="activeTab"
-                          className="absolute inset-0 bg-gradient-to-r from-brand-glow/20 to-blue-500/20 rounded-full -z-10 border border-brand-glow/50"
+                          className="absolute inset-0 bg-gradient-to-r from-brand-glow to-blue-500 rounded-full -z-10 shadow-[0_0_20px_rgba(56,189,248,0.4)]"
                           transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                       )}
+
+                      {/* 2. The Link Content */}
+                      <span className="relative z-10">{link.label}</span>
+                      
+                      {/* 3. The Icon */}
+                      {/* <ChevronRight 
+                        size={14} 
+                        className={clsx(
+                          "transition-opacity duration-300",
+                          isActive ? "text-dark-900 opacity-100" : "opacity-30"
+                        )} 
+                      /> */}
                     </>
                   )}
                 </NavLink>
