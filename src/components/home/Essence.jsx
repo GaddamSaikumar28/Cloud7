@@ -1,44 +1,4 @@
-// import React from 'react';
-// import { Atom } from 'lucide-react';
 
-// const Essence = () => {
-//   return (
-//     <section className="py-24 relative overflow-hidden bg-dark-900">
-//       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-        
-//         {/* Visual Side */}
-//         <div className="relative flex justify-center">
-//             <div className="absolute inset-0 bg-brand-glow/5 blur-[80px] rounded-full"></div>
-//             <div className="w-64 h-64 border border-white/10 rounded-full flex items-center justify-center relative animate-spin-slow">
-//                 <Atom size={120} className="text-slate-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" strokeWidth={1} />
-//                 {/* Decorative particles */}
-//                 <div className="absolute top-0 right-0 w-3 h-3 bg-white rounded-full shadow-glow"></div>
-//                 <div className="absolute bottom-10 left-10 w-2 h-2 bg-white/50 rounded-full"></div>
-//             </div>
-//         </div>
-
-//         {/* Text Side */}
-//         <div>
-//             <h2 className="text-3xl md:text-5xl font-light mb-8">The Cloud7 Essence</h2>
-//             <div className="space-y-6 text-slate-400 font-light leading-relaxed">
-//                 <p>
-//                     The Cloud7 Essence is an aggregate bio-engineered nutritional complex designed to optimize cognitive function and physical wellness.
-//                 </p>
-//                 <p>
-//                     Our unique formula combines <span className="text-white font-normal">particular co-enzymes</span> in fine modulation to transform the body's natural processes.
-//                 </p>
-//                 <p className="text-xs uppercase tracking-widest text-slate-600 border-l border-slate-700 pl-4">
-//                    Since the inception a high-resolving line has been our standard.
-//                 </p>
-//             </div>
-//         </div>
-
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Essence;
 import React, { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Atom, Sparkles, Dna, Activity, Loader2 } from 'lucide-react';

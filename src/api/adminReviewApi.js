@@ -1,34 +1,5 @@
 import { supabase } from '../client/supabaseClient';
 
-// export const getAdminReviews = async ({ status, search, productId }) => {
-//   let query = supabase
-//     .from('reviews')
-//     .select(`
-//       id, rating, comment, created_at, status, admin_response, verified_purchase,
-//       user:profiles(first_name, last_name, email),
-//       product:products(id, name, slug, cover_image_url)
-//     `)
-//     .order('created_at', { ascending: false });
-
-//   // Filters
-//   if (status && status !== 'All') {
-//     query = query.eq('status', status.toLowerCase());
-//   }
-  
-//   if (productId) {
-//     query = query.eq('product_id', productId);
-//   }
-
-//   // Search by User Name or Comment content
-//   if (search) {
-//     query = query.or(`comment.ilike.%${search}%,admin_response.ilike.%${search}%`);
-//   }
-
-//   const { data, error } = await query;
-//   if (error) throw error;
-//   return data;
-// };
-
 export const getAdminReviews = async ({ status, search, productId }) => {
   // Query the View instead of the raw table
   let query = supabase

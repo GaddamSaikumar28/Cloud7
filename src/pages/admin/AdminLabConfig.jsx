@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, UploadCloud, Trash2, CheckCircle, AlertCircle, 
-  Search, Calendar, Save, X, File, Loader2, Microscope 
+  Search, Calendar, Save, X, Microscope, Image as ImageIcon
 } from 'lucide-react';
 import { adminLabApi } from '../../api/adminLabApi';
 
@@ -12,8 +13,16 @@ const AdminLabConfig = () => {
   const [search, setSearch] = useState('');
   
   // Modal State
-  const [editingVariant, setEditingVariant] = useState(null); // The variant object being edited
-  const [formData, setFormData] = useState({ batch_number: '', tested_at: '', file: null, existingUrl: '' });
+  const [editingVariant, setEditingVariant] = useState(null); 
+  // Added variantFile and existingImageUrl to state
+  const [formData, setFormData] = useState({ 
+    batch_number: '', 
+    tested_at: '', 
+    reportFile: null, 
+    existingReportUrl: '',
+    variantFile: null,
+    existingImageUrl: ''
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -39,15 +48,11 @@ const AdminLabConfig = () => {
     setFormData({
       batch_number: variant.batch_number || '',
       tested_at: variant.tested_at || '',
-      existingUrl: variant.lab_report_url || '',
-      file: null
+      existingReportUrl: variant.lab_report_url || '',
+      reportFile: null,
+      existingImageUrl: variant.image_url || '',
+      variantFile: null
     });
-  };
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData(prev => ({ ...prev, file: e.target.files[0] }));
-    }
   };
 
   const handleSave = async (e) => {
@@ -56,25 +61,34 @@ const AdminLabConfig = () => {
     
     setIsSubmitting(true);
     try {
-      let finalUrl = formData.existingUrl;
+      let finalReportUrl = formData.existingReportUrl;
+      let finalImageUrl = formData.existingImageUrl;
 
-      // 1. Upload new file if selected
-      if (formData.file) {
-        finalUrl = await adminLabApi.uploadReportFile(formData.file);
+      // 1. Upload new Report if selected
+      if (formData.reportFile) {
+        finalReportUrl = await adminLabApi.uploadReportFile(formData.reportFile);
       }
 
-      if (!finalUrl && !formData.file) return alert("Please upload a PDF/Image or ensure an existing report exists.");
+      // 2. Upload new Variant Image if selected
+      if (formData.variantFile) {
+        finalImageUrl = await adminLabApi.uploadVariantImage(formData.variantFile);
+      }
 
-      // 2. Update Database
+      if (!finalReportUrl && !formData.reportFile) {
+         // Optional: warning if saving without a report, but maybe they just want to save the image
+      }
+
+      // 3. Update Database
       await adminLabApi.updateVariantReport(editingVariant.id, {
         batch_number: formData.batch_number,
         tested_at: formData.tested_at || new Date().toISOString().split('T')[0],
-        lab_report_url: finalUrl
+        lab_report_url: finalReportUrl,
+        image_url: finalImageUrl
       });
 
-      alert("Report updated successfully!");
+      alert("Configuration updated successfully!");
       setEditingVariant(null);
-      loadData(); // Refresh UI
+      loadData(); 
     } catch (err) {
       alert("Error: " + err.message);
     } finally {
@@ -82,9 +96,8 @@ const AdminLabConfig = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to remove this report? The file link and batch info will be cleared.")) return;
-    
+  const handleDeleteReport = async () => {
+    if (!window.confirm("Remove this report? Batch info will be cleared.")) return;
     setIsSubmitting(true);
     try {
       await adminLabApi.deleteVariantReport(editingVariant.id);
@@ -111,15 +124,15 @@ const AdminLabConfig = () => {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Lab Configuration</h1>
-          <p className="text-slate-400">Manage Certificates of Analysis (COAs) and Batch IDs.</p>
+          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Lab & Image Config</h1>
+          <p className="text-slate-400">Manage COAs, Batch IDs, and Product Variant Images.</p>
         </div>
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
           <input 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search Product or Batch..."
+            placeholder="Search..."
             className="bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 w-64 md:w-80 text-white focus:border-brand-glow outline-none transition-colors"
           />
         </div>
@@ -133,7 +146,7 @@ const AdminLabConfig = () => {
             {/* Product Header */}
             <div className="p-4 bg-black/20 border-b border-white/5 flex items-center gap-4">
               <div className="w-12 h-12 bg-white/5 rounded-lg overflow-hidden shrink-0 border border-white/10">
-                {product.cover_image_url && <img src={product.cover_image_url} laoding="lazy" alt="" className="w-full h-full object-cover" />}
+                {product.cover_image_url && <img src={product.cover_image_url} loading="lazy" alt="" className="w-full h-full object-cover" />}
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-lg text-white">{product.name}</h3>
@@ -146,6 +159,15 @@ const AdminLabConfig = () => {
               {product.variants.map(variant => (
                 <div key={variant.id} className="flex flex-col md:flex-row items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-brand-glow/30 transition-all">
                   
+                  {/* Variant Image Thumbnail */}
+                  <div className="w-16 h-16 bg-black/40 rounded-lg border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                    {variant.image_url ? (
+                      <img src={variant.image_url} alt="Variant" className="w-full h-full object-contain" />
+                    ) : (
+                      <ImageIcon size={20} className="text-slate-600" />
+                    )}
+                  </div>
+
                   {/* Info */}
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-2 mb-1">
@@ -153,7 +175,6 @@ const AdminLabConfig = () => {
                       <span className="font-bold text-sm">{variant.name}</span>
                     </div>
                     <div className="flex items-center gap-4 text-xs text-slate-400">
-                      {/* <span className="font-mono">SKU: {variant.sku || 'N/A'}</span> */}
                       {variant.batch_number ? (
                         <span className="text-brand-glow font-bold bg-brand-glow/10 px-2 rounded">Batch: {variant.batch_number}</span>
                       ) : (
@@ -173,7 +194,7 @@ const AdminLabConfig = () => {
                       onClick={() => openEditModal(variant)}
                       className="px-4 py-2 bg-brand-glow text-dark-900 font-bold text-xs rounded-lg hover:brightness-110 flex items-center gap-2"
                     >
-                      <Microscope size={14} /> {variant.lab_report_url ? 'Edit Config' : 'Upload Report'}
+                      <Microscope size={14} /> Edit Config
                     </button>
                   </div>
 
@@ -195,11 +216,11 @@ const AdminLabConfig = () => {
             />
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-dark-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden p-8"
+              className="relative w-full max-w-lg bg-dark-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden p-8 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-start mb-6">
                  <div>
-                    <h2 className="text-2xl font-bold text-white">Configure Report</h2>
+                    <h2 className="text-2xl font-bold text-white">Configure Variant</h2>
                     <p className="text-slate-400 text-sm mt-1">{editingVariant.name}</p>
                  </div>
                  <button onClick={() => setEditingVariant(null)} className="p-2 hover:bg-white/10 rounded-full"><X size={20} className="text-slate-400" /></button>
@@ -207,41 +228,63 @@ const AdminLabConfig = () => {
 
               <form onSubmit={handleSave} className="space-y-6">
                 
-                {/* Batch ID */}
-                <div className="space-y-2">
-                   <label className="text-xs font-bold text-slate-500 uppercase">Batch Number</label>
-                   <input 
-                      value={formData.batch_number}
-                      onChange={e => setFormData({...formData, batch_number: e.target.value})}
-                      placeholder="e.g. B-101-XZ"
+                {/* 1. Batch ID & Date */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase">Batch Number</label>
+                    <input 
+                        value={formData.batch_number}
+                        onChange={e => setFormData({...formData, batch_number: e.target.value})}
+                        placeholder="e.g. B-101"
+                        className="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-brand-glow outline-none"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase">Date Tested</label>
+                    <input 
+                      type="date"
+                      value={formData.tested_at}
+                      onChange={e => setFormData({...formData, tested_at: e.target.value})}
                       className="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-brand-glow outline-none"
-                   />
+                    />
+                  </div>
                 </div>
 
-                {/* Date */}
+                {/* 2. VARIANT IMAGE UPLOAD */}
                 <div className="space-y-2">
-                   <label className="text-xs font-bold text-slate-500 uppercase">Date Tested</label>
-                   <div className="relative">
-                      <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+                   <label className="text-xs font-bold text-slate-500 uppercase">Variant Image (Optional)</label>
+                   
+                   {formData.existingImageUrl && !formData.variantFile && (
+                     <div className="flex items-center gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl mb-2">
+                        <ImageIcon size={16} className="text-blue-500" />
+                        <span className="text-xs text-blue-400 font-bold truncate flex-1">Has Existing Image</span>
+                        <a href={formData.existingImageUrl} target="_blank" rel="noreferrer" className="text-xs underline text-white">View</a>
+                     </div>
+                   )}
+
+                   <div className="relative group cursor-pointer">
                       <input 
-                        type="date"
-                        value={formData.tested_at}
-                        onChange={e => setFormData({...formData, tested_at: e.target.value})}
-                        className="w-full bg-dark-950 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-white text-sm focus:border-brand-glow outline-none"
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => setFormData(prev => ({ ...prev, variantFile: e.target.files[0] }))}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       />
+                      <div className="border-2 border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center bg-white/5 group-hover:border-brand-glow/50 group-hover:bg-brand-glow/5 transition-all">
+                         <ImageIcon size={24} className="text-slate-500 mb-2 group-hover:text-brand-glow" />
+                         <p className="text-xs font-bold text-white">{formData.variantFile ? formData.variantFile.name : 'Upload Product Photo'}</p>
+                      </div>
                    </div>
                 </div>
 
-                {/* File Upload */}
+                {/* 3. REPORT UPLOAD */}
                 <div className="space-y-2">
                    <label className="text-xs font-bold text-slate-500 uppercase">Lab Report (PDF/Image)</label>
                    
-                   {/* Current File Status */}
-                   {formData.existingUrl && !formData.file && (
+                   {formData.existingReportUrl && !formData.reportFile && (
                      <div className="flex items-center gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-xl mb-2">
                         <CheckCircle size={16} className="text-green-500" />
-                        <span className="text-xs text-green-400 font-bold truncate flex-1">Current: ...{formData.existingUrl.slice(-15)}</span>
-                        <a href={formData.existingUrl} target="_blank" rel="noreferrer" className="text-xs underline text-white">View</a>
+                        <span className="text-xs text-green-400 font-bold truncate flex-1">Report on File</span>
+                        <a href={formData.existingReportUrl} target="_blank" rel="noreferrer" className="text-xs underline text-white">View</a>
                      </div>
                    )}
 
@@ -249,24 +292,24 @@ const AdminLabConfig = () => {
                       <input 
                         type="file" 
                         accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={handleFileChange}
+                        onChange={(e) => setFormData(prev => ({ ...prev, reportFile: e.target.files[0] }))}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       />
-                      <div className="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center bg-white/5 group-hover:border-brand-glow/50 group-hover:bg-brand-glow/5 transition-all">
-                         <UploadCloud size={32} className="text-slate-500 mb-2 group-hover:text-brand-glow" />
-                         <p className="text-sm font-bold text-white">{formData.file ? formData.file.name : 'Click to Upload New File'}</p>
-                         <p className="text-xs text-slate-500 mt-1">PDF, JPG or PNG</p>
+                      <div className="border-2 border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center bg-white/5 group-hover:border-brand-glow/50 group-hover:bg-brand-glow/5 transition-all">
+                         <UploadCloud size={24} className="text-slate-500 mb-2 group-hover:text-brand-glow" />
+                         <p className="text-xs font-bold text-white">{formData.reportFile ? formData.reportFile.name : 'Upload Lab Report'}</p>
                       </div>
                    </div>
                 </div>
 
                 {/* Actions */}
                 <div className="flex gap-3 pt-4 border-t border-white/10">
-                   {formData.existingUrl && (
+                   {formData.existingReportUrl && (
                      <button 
                        type="button" 
-                       onClick={handleDelete}
-                       className="px-4 py-3 bg-red-500/10 text-red-400 font-bold rounded-xl hover:bg-red-500/20 border border-red-500/20 flex items-center gap-2"
+                       onClick={handleDeleteReport}
+                       className="px-4 py-3 bg-red-500/10 text-red-400 font-bold rounded-xl hover:bg-red-500/20 border border-red-500/20"
+                       title="Delete Report"
                      >
                         <Trash2 size={18} />
                      </button>
@@ -276,8 +319,8 @@ const AdminLabConfig = () => {
                      disabled={isSubmitting}
                      className="flex-1 py-3 bg-brand-glow text-dark-900 font-bold rounded-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2"
                    >
-                      {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} 
-                      Save Configuration
+                      <Save size={18} />
+                      Save Changes
                    </button>
                 </div>
 

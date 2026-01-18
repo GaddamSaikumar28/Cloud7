@@ -1,48 +1,4 @@
 
-// import React from 'react';
-// import { Microscope, Leaf, FlaskConical, Flag } from 'lucide-react';
-
-// const items = [
-//   { icon: Microscope, text: "ALWAYS LAB TESTED" },
-//   { icon: Leaf, text: "PURE KRATOM EXTRACT" },
-//   { icon: FlaskConical, text: "RESEARCH BACKED" },
-//   { icon: Flag, text: "PROUDLY USA MADE" },
-// ];
-
-// const InfiniteBanner = () => {
-//   return (
-//     <div className="w-full h-14 relative overflow-hidden z-20 border-y border-white/10">
-      
-//       {/* 1. Dynamic Gradient Background */}
-//       <div className="absolute inset-0 bg-gradient-to-r from-[#022c36] via-[#004d61] to-[#022c36]"></div>
-      
-//       {/* 2. Animated Gloss/Shimmer Overlay */}
-//       <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 animate-shimmer pointer-events-none"></div>
-
-//       {/* 3. Scrolling Content (Right to Left) */}
-//       <div className="absolute inset-0 flex items-center">
-//         <div className="flex w-max animate-marquee">
-//           {/* We repeat the items 4 times to ensure no gaps on wide screens */}
-//           {[...Array(4)].map((_, i) => (
-//             <div key={i} className="flex shrink-0">
-//               {items.map((item, index) => (
-//                 <div key={index} className="flex items-center px-8 lg:px-16 gap-3 group cursor-default">
-//                   <item.icon className="w-5 h-5 text-brand-glow/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
-//                   <span className="text-white/90 font-bold tracking-widest text-xs uppercase group-hover:text-white transition-colors whitespace-nowrap">
-//                     {item.text}
-//                   </span>
-//                 </div>
-//               ))}
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default InfiniteBanner;
-
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react'; // Import all icons

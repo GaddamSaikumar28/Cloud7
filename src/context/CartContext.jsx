@@ -1,182 +1,4 @@
 
-// import React, { createContext, useContext, useState, useEffect } from 'react';
-// import { useAuth } from './AuthContext';
-// import { cartApi } from '../api/cartApi';
-
-// const CartContext = createContext();
-// export const useCart = () => useContext(CartContext);
-
-// export const CartProvider = ({ children }) => {
-//   const { user } = useAuth();
-//   const [cartItems, setCartItems] = useState([]);
-//   const [deliveryConfig, setDeliveryConfig] = useState({ min_order_value: 0, shipping_fee: 0 });
-
-//   // --- MAP DB RESPONSE TO UI ---
-//   const mapDbToUi = (items) => {
-//     return items
-//       .filter(item => item.product_variants && item.products) // Safety Filter
-//       .map(item => {
-//         // Reconstruct description from deep nested relation
-//         const variantMap = item.product_variants?.variant_selection_map || [];
-//         const labels = variantMap.map(vm => {
-//           const type = vm.variant_options?.type?.name;
-//           const val = vm.variant_options?.name;
-//           return (type && val) ? `${type}: ${val}` : null;
-//         }).filter(Boolean);
-
-//         return {
-//           dbId: item.id,
-//           id: item.product_id,
-//           variantId: item.variant_id,
-//           name: item.products.name,
-//           slug: item.products.slug,
-//           imageColor: item.products.image_color,
-//           quantity: item.quantity,
-//           description: labels.join(' | ') || 'Standard',
-//           price: item.product_variants.price
-//         };
-//       });
-//   };
-
-//   // --- INIT CART ---
-//   useEffect(() => {
-//     const initCart = async () => {
-//       try {
-//         const config = await cartApi.getDeliveryConfig();
-//         if (config) setDeliveryConfig(config);
-
-//         if (user) {
-//           const dbItems = await cartApi.fetchCart(user.id);
-//           setCartItems(mapDbToUi(dbItems));
-//         } else {
-//             setCartItems([]); // Clear local items if user logs out
-//         }
-//       } catch (err) {
-//         console.error("Cart Init Error:", err);
-//       }
-//     };
-//     initCart();
-//   }, [user]);
-
-//   // --- ADD TO CART ---
-//   const addToCart = async (product, quantity, selections, variantId, variantPrice) => {
-//     // 1. Build Description String for Optimistic UI
-//     const description = Object.entries(selections)
-//       .map(([k, v]) => `${k}: ${v}`)
-//       .join(' | ');
-
-//     // 2. Legacy Support: Extract "Flavor" for the flavor_name column
-//     const legacyFlavor = selections["Flavor"] || null;
-
-//     // 3. Optimistic Update
-//     setCartItems(prev => {
-//       const existingIdx = prev.findIndex(item => item.variantId === variantId);
-
-//       if (existingIdx > -1) {
-//         // Update Quantity locally
-//         const updated = [...prev];
-//         updated[existingIdx].quantity += quantity;
-//         return updated;
-//       } else {
-//         // Add New Item locally
-//         return [...prev, {
-//           dbId: `temp-${Date.now()}`,
-//           id: product.id,
-//           variantId: variantId,
-//           name: product.name,
-//           slug: product.slug,
-//           imageColor: product.image_color,
-//           quantity,
-//           description,
-//           price: variantPrice // Use the specific variant price passed from ProductDetail
-//         }];
-//       }
-//     });
-
-//     // 4. DB Sync
-//     if (user) {
-//       try {
-//         await cartApi.addToCart(user.id, product.id, variantId, legacyFlavor, quantity);
-//         // Silent refresh to ensure IDs are synced
-//         const dbItems = await cartApi.fetchCart(user.id);
-//         setCartItems(mapDbToUi(dbItems));
-//       } catch (err) {
-//         console.error("Cart Sync Error:", err);
-//       }
-//     }
-//   };
-
-//   // --- UPDATE QUANTITY ---
-//   const updateQuantity = async (index, newQty) => {
-//     if (newQty < 1) return;
-//     const item = cartItems[index];
-
-//     // Optimistic
-//     setCartItems(prev => prev.map((it, i) => i === index ? { ...it, quantity: newQty } : it));
-
-//     // DB Sync
-//     if (user && item.dbId && !item.dbId.toString().startsWith('temp')) {
-//       await cartApi.updateQuantity(item.dbId, newQty);
-//     }
-//   };
-
-//   // --- REMOVE ITEM ---
-//   const removeFromCart = async (index) => {
-//     const item = cartItems[index];
-    
-//     // Optimistic
-//     setCartItems(prev => prev.filter((_, i) => i !== index));
-
-//     // DB Sync
-//     if (user && item.dbId && !item.dbId.toString().startsWith('temp')) {
-//       await cartApi.removeItem(item.dbId);
-//     }
-//   };
-
-//   // --- CLEAR CART (Added) ---
-//   const clearCart = async () => {
-//     // 1. Instant UI Clear
-//     setCartItems([]);
-
-//     // 2. DB Sync
-//     if (user) {
-//       try {
-//         await cartApi.clearCart(user.id);
-//       } catch (err) {
-//         console.error("Failed to clear cart in DB:", err);
-//       }
-//     }
-//   };
-
-//   // --- GETTERS ---
-//   const getCartCount = () => cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
-  
-//   const getSubtotal = () => cartItems.reduce((acc, it) => acc + (parseFloat(it.price || 0) * it.quantity), 0);
-  
-//   const getShipping = () => {
-//     const sub = getSubtotal();
-//     // If cart is empty, shipping is 0. Else check threshold.
-//     if (sub === 0) return 0;
-//     return sub >= (deliveryConfig?.min_order_value || 0) ? 0 : (deliveryConfig?.shipping_fee || 0);
-//   };
-
-//   return (
-//     <CartContext.Provider value={{ 
-//       cartItems, 
-//       addToCart, 
-//       removeFromCart, 
-//       updateQuantity, 
-//       clearCart, // Exported here
-//       getCartCount, 
-//       getSubtotal, 
-//       getShipping, 
-//       deliveryConfig 
-//     }}>
-//       {children}
-//     </CartContext.Provider>
-//   );
-// };
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { cartApi } from '../api/cartApi';
@@ -193,34 +15,73 @@ export const CartProvider = ({ children }) => {
   const [deliveryConfig, setDeliveryConfig] = useState({ min_order_value: 0, shipping_fee: 0 });
 
   // --- INIT CART ---
-  useEffect(() => {
-    let isMounted = true;
+  // useEffect(() => {
+  //   let isMounted = true;
 
-    const initCart = async () => {
-      setCartLoading(true);
-      try {
-        // Parallel Fetch for speed
-        const [config, dbItems] = await Promise.all([
-          cartApi.getDeliveryConfig(),
-          user ? cartApi.fetchCart(user.id) : Promise.resolve([])
-        ]);
+  //   const initCart = async () => {
+  //     setCartLoading(true);
+  //     try {
+  //       // Parallel Fetch for speed
+  //       const [config, dbItems] = await Promise.all([
+  //         cartApi.getDeliveryConfig(),
+  //         user ? cartApi.fetchCart(user.id) : Promise.resolve([])
+  //       ]);
 
-        if (isMounted) {
-          if (config) setDeliveryConfig(config);
-          // Store RAW DB items. Do not filter nulls here; Cart.jsx handles "Hard Deletes"
-          setCartItems(dbItems || []); 
-        }
-      } catch (err) {
-        console.error("Cart Init Error:", err);
-      } finally {
-        if (isMounted) setCartLoading(false);
+  //       if (isMounted) {
+  //         if (config) setDeliveryConfig(config);
+  //         // Store RAW DB items. Do not filter nulls here; Cart.jsx handles "Hard Deletes"
+  //         setCartItems(dbItems || []); 
+  //       }
+  //     } catch (err) {
+  //       console.error("Cart Init Error:", err);
+  //     } finally {
+  //       if (isMounted) setCartLoading(false);
+  //     }
+  //   };
+
+  //   initCart();
+
+  //   return () => { isMounted = false; };
+  // }, [user]);
+  // Start this immediately on mount
+useEffect(() => {
+  const fetchConfig = async () => {
+    try {
+      const config = await cartApi.getDeliveryConfig();
+      if (config) setDeliveryConfig(config);
+    } catch (err) {
+      console.error("Config Fetch Error:", err);
+    }
+  };
+  fetchConfig();
+}, []); // Empty dependency array means it runs once at startup
+
+useEffect(() => {
+  let isMounted = true;
+
+  const loadUserCart = async () => {
+    if (!user) {
+      setCartItems([]);
+      setCartLoading(false);
+      return;
+    }
+
+    setCartLoading(true);
+    try {
+      const dbItems = await cartApi.fetchCart(user.id);
+      if (isMounted) {
+        setCartItems(dbItems || []);
       }
-    };
+    } catch (err) {
+      console.error("Cart Fetch Error:", err);
+    } finally {
+      if (isMounted) setCartLoading(false);
+    }
+  };
 
-    initCart();
-
-    return () => { isMounted = false; };
-  }, [user]);
+  loadUserCart();
+  return () => { isMounted = false; };
+}, [user]); // Only re-runs when the user object changes
 
   // --- ADD TO CART ---
   const addToCart = async (product, quantity, selections, variantId, variantPrice) => {
