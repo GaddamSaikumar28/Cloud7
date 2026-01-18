@@ -531,7 +531,7 @@ const Navbar = () => {
               className="fixed top-0 right-0 bottom-0 w-[85%] max-w-[320px] bg-dark-950 border-l border-white/10 z-[102] flex flex-col shadow-2xl"
             >
               <div className="p-6 border-b border-white/10 flex justify-between items-center bg-dark-900">
-                <span className="text-sm font-bold text-slate-400 tracking-widest">NAVIGATION</span>
+                <span className="text-sm font-bold text-slate-400 tracking-widest">Cloud 7</span>
                 <button onClick={toggleMobileMenu} className="p-2 hover:bg-white/10 rounded-full text-white transition-colors">
                    <X size={20} />
                 </button>
