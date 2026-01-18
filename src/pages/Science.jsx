@@ -267,7 +267,7 @@ const LabReports = () => {
                     <div className="lg:col-span-1 bg-black/20 p-8 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col items-center text-center lg:items-start lg:text-left">
                         <div className="w-32 h-32 mb-6 rounded-2xl bg-white/5 p-2 border border-white/10">
                             {product.image ? (
-                                <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
+                                <img loading="lazy" src={product.image} alt={product.name} className="w-full h-full object-contain" />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-slate-600"><FileText/></div>
                             )}

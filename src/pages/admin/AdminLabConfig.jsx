@@ -133,7 +133,7 @@ const AdminLabConfig = () => {
             {/* Product Header */}
             <div className="p-4 bg-black/20 border-b border-white/5 flex items-center gap-4">
               <div className="w-12 h-12 bg-white/5 rounded-lg overflow-hidden shrink-0 border border-white/10">
-                {product.cover_image_url && <img src={product.cover_image_url} alt="" className="w-full h-full object-cover" />}
+                {product.cover_image_url && <img src={product.cover_image_url} laoding="lazy" alt="" className="w-full h-full object-cover" />}
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-lg text-white">{product.name}</h3>

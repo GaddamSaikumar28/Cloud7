@@ -251,7 +251,7 @@ const AdminProducts = () => {
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-lg bg-dark-800 border border-white/10 overflow-hidden shrink-0">
                           {product.cover_image_url ? (
-                            <img src={product.cover_image_url} alt="" className="w-full h-full object-cover" />
+                            <img  laoding="lazy" src={product.cover_image_url} alt="" className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-slate-600"><Package size={20}/></div>
                           )}

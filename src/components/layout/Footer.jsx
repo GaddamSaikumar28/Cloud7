@@ -119,7 +119,9 @@ const Footer = () => {
           <div className="md:col-span-4 lg:col-span-4 space-y-6">
             <Link to="/" className="inline-block group">
                 {logo.logo_url ? (
-                    <img src={logo.logo_url} alt={logo.site_name} className="h-10 w-auto object-contain" />
+                    <img src={logo.logo_url} alt={logo.site_name} className="h-10 w-auto object-contain"
+                      loading="lazy"
+                    />
                 ) : (
                     <div className="flex items-center gap-2">
                         <Sparkles className="text-brand-glow w-6 h-6" />

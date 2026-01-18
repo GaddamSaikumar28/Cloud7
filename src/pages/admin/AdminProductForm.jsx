@@ -1135,7 +1135,7 @@ const AdminProductForm = () => {
                <label className="text-xs font-bold text-slate-500 uppercase block mb-2">Cover Image</label>
                <div className="relative aspect-square bg-dark-950 rounded-xl border-2 border-dashed border-white/10 flex items-center justify-center overflow-hidden group hover:border-brand-glow transition-colors">
                   {formData.cover_image_url ? (
-                    <img src={formData.cover_image_url} alt="Cover" className="w-full h-full object-cover" />
+                    <img  laoding="lazy" src={formData.cover_image_url} alt="Cover" className="w-full h-full object-cover" />
                   ) : (
                     <Upload className="text-slate-600" />
                   )}
@@ -1147,7 +1147,7 @@ const AdminProductForm = () => {
                <div className="grid grid-cols-3 gap-2">
                   {formData.gallery_images.map((img, i) => (
                     <div key={i} className="relative aspect-square rounded-lg bg-dark-950 overflow-hidden border border-white/10 group">
-                      <img src={img} className="w-full h-full object-cover" />
+                      <img laoding="lazy" src={img} className="w-full h-full object-cover" />
                       <button type="button" onClick={() => removeGalleryImage(i)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <X size={12} />
                       </button>

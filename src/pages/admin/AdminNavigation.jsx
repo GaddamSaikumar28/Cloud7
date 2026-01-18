@@ -334,7 +334,7 @@ const AdminNavigation = () => {
               {/* Preview Box */}
               <div className="h-16 w-16 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center overflow-hidden shrink-0">
                 {settings.logo_url ? (
-                  <img src={settings.logo_url} alt="Logo" className="w-full h-full object-contain p-2" />
+                  <img  laoding="lazy" src={settings.logo_url} alt="Logo" className="w-full h-full object-contain p-2" />
                 ) : (
                   <Layout size={24} className="text-slate-600"/>
                 )}

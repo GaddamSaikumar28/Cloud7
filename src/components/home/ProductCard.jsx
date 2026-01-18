@@ -142,6 +142,7 @@ const SpotlightStage = ({ product }) => {
                 src={product.cover_image_url || DUMMY_IMAGE} 
                 alt={product.name} 
                 className="relative z-10 w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform transition-transform duration-500 group-hover:scale-110" 
+                loading="lazy"
               />
            </motion.div>
 
@@ -237,6 +238,7 @@ const StandardCard = ({ product }) => {
                   src={product.cover_image_url || DUMMY_IMAGE} 
                   alt={product.name} 
                   className="relative z-10 w-3/4 h-auto object-contain transition-transform duration-500 group-hover:scale-110" 
+                  loading="lazy"
                />
             </div>
             <div className="mt-auto">

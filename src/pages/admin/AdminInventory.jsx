@@ -442,7 +442,7 @@ const AdminInventory = () => {
                         {/* 1. PRODUCT INFO */}
                         <div className="col-span-5 flex items-center gap-4">
                            <div className="w-10 h-10 bg-white/10 rounded-lg overflow-hidden shrink-0">
-                              {item.productImage && <img src={item.productImage} className="w-full h-full object-cover" />}
+                              {item.productImage && <img src={item.productImage} laoding="lazy" className="w-full h-full object-cover" />}
                            </div>
                            <div>
                               <div className="font-bold text-sm truncate">{item.productName}</div>

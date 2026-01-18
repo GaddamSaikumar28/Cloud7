@@ -137,6 +137,7 @@ console.log(cartItems);
                           // } 
                           src = {product.cover_image_url || "https://via.placeholder.com/150/1a1a1a/ffffff?text=" + productName.substring(0,3)}
                           alt={productName} 
+                          loading="lazy"
                           className={`w-full h-full object-cover ${item.isBlocking ? 'grayscale opacity-50' : ''}`} 
                         />
                       </Link>

@@ -206,6 +206,7 @@ const Learn = () => {
                     src="https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=2080&auto=format&fit=crop" 
                     alt="Lab" 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale hover:grayscale-0" 
+                    loading="lazy"
                   />
                   {/* Floating Badge */}
                   <div className="absolute bottom-8 left-8 z-20 bg-dark-900/90 backdrop-blur-xl p-6 rounded-2xl border border-white/10 max-w-xs shadow-lg">
@@ -332,6 +333,7 @@ const ArticleCard = ({ article, index }) => {
                src={imageUrl} 
                alt={article.title} 
                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-50" 
+               loading="lazy"
             />
             {/* Gradient Overlay for Text Readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/60 to-transparent" />

@@ -718,6 +718,7 @@ console.log('checkout page',cartItems);
                           src={imgUrl} 
                           alt={productName} 
                           className="w-full h-full object-cover"
+                          loading="lazy"
                         />
                       ) : (
                         <div className={`w-full h-full bg-gradient-to-br ${imgColor}`} />

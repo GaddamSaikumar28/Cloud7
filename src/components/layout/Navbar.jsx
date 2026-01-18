@@ -331,6 +331,7 @@ const Navbar = () => {
                   src={config.logo_url} 
                   alt={config.site_name} 
                   className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105" 
+                  loading="lazy"
                 />
              ) : (
                 // Text Logo Fallback

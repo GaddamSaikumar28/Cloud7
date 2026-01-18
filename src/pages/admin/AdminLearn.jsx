@@ -439,7 +439,7 @@ const AdminLearn = () => {
               {articles.map(article => (
                  <div key={article.id} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden group hover:border-brand-glow/30 transition-all flex flex-col h-full">
                     <div className="h-40 bg-dark-950 relative">
-                       <img src={article.image_url || "https://via.placeholder.com/400"} alt={article.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
+                       <img src={article.image_url || "https://via.placeholder.com/400"} laoding="lazy" alt={article.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
                        <div className="absolute top-2 right-2 flex gap-2">
                           <button onClick={() => handleOpenModal('article', article)} className="p-2 bg-dark-900/80 backdrop-blur text-white rounded hover:bg-brand-glow hover:text-dark-900 transition-colors"><Edit2 size={14}/></button>
                           <button onClick={() => handleDelete('article', article.id)} className="p-2 bg-dark-900/80 backdrop-blur text-red-400 rounded hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={14}/></button>
@@ -547,7 +547,7 @@ const AdminLearn = () => {
                             {/* Preview Thumbnail */}
                             {articleForm.image_url && (
                                 <div className="mt-2 h-20 w-32 rounded-lg overflow-hidden border border-white/10 bg-dark-950">
-                                    <img src={articleForm.image_url} alt="Preview" className="w-full h-full object-cover" />
+                                    <img laoding="lazy" src={articleForm.image_url} alt="Preview" className="w-full h-full object-cover" />
                                 </div>
                             )}
                        </div>

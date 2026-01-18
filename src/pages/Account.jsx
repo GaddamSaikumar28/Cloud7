@@ -1172,7 +1172,7 @@ const OrderCard = ({ order, onPrint, onCancel, onReturn }) => {
                 <div className="flex items-center gap-4">
                     {/* Fixed Image Loading */}
                     <div className={`w-14 h-14 rounded-2xl bg-dark-900 border border-white/10 overflow-hidden shrink-0`}>
-                       <img src={imageUrl} alt="Order Preview" className="w-full h-full object-cover" />
+                       <img src={imageUrl} alt="Order Preview" className="w-full h-full object-cover" loading="lazy"/>
                     </div>
                     
                     <div>
@@ -1226,7 +1226,7 @@ const OrderCard = ({ order, onPrint, onCancel, onReturn }) => {
                                 {order.order_items.map(item => (
                                     <div key={item.id} className="flex gap-4 items-center">
                                         <div className="w-10 h-10 rounded-lg bg-dark-800 border border-white/10 overflow-hidden shrink-0">
-                                            {item.products?.cover_image_url && <img src={item.products.cover_image_url} className="w-full h-full object-cover opacity-80" />}
+                                            {item.products?.cover_image_url && <img src={item.products.cover_image_url} className="w-full h-full object-cover opacity-80" loading="lazy" />}
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-white font-bold text-sm">{item.item_name}</p>

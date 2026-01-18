@@ -140,7 +140,7 @@ const AdminReviews = () => {
                      <div className="flex items-start gap-4 min-w-[200px]">
                         <div className="w-10 h-10 rounded-lg bg-dark-800 border border-white/10 overflow-hidden shrink-0">
                            {review.product?.cover_image_url ? (
-                              <img src={review.product.cover_image_url} className="w-full h-full object-cover" />
+                              <img laoding="lazy" src={review.product.cover_image_url} className="w-full h-full object-cover" />
                            ) : (
                               <div className="flex items-center justify-center h-full text-slate-600"><MessageSquare size={16}/></div>
                            )}

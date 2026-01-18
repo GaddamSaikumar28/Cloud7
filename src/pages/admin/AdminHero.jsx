@@ -245,6 +245,7 @@ const AdminHero = () => {
                                   src={slot.preview || slot.url} 
                                   alt={`Layer ${index}`} 
                                   className="max-w-full max-h-full object-contain drop-shadow-2xl" 
+                                  laoding="lazy"
                                 />
                                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                    <p className="text-white font-bold text-sm flex items-center gap-2"><UploadCloud size={16} /> Change Image</p>

@@ -758,7 +758,7 @@ const ProductDetail = () => {
               <X size={32} />
             </button>
             <div className="relative max-w-5xl max-h-[85vh] w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-                <img src={images[activeImgIndex]} alt="Full view" className="max-w-full max-h-full object-contain" />
+                <img src={images[activeImgIndex]} alt="Full view" className="max-w-full max-h-full object-contain" loading="lazy" />
             </div>
           </motion.div>
         )}
@@ -796,7 +796,7 @@ const ProductDetail = () => {
                         onClick={() => setActiveImgIndex(idx)}
                         className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 border-2 ${idx === activeImgIndex ? `border-brand-glow` : 'border-transparent border-white/5 opacity-60'}`}
                     >
-                        <img src={img} className="w-full h-full object-cover" />
+                        <img src={img} className="w-full h-full object-cover" loading="lazy"/>
                     </button>
                 ))}
             </div>
@@ -1014,7 +1014,7 @@ const ProductDetail = () => {
                 {suggestions.map(s => (
                   <Link key={s.id} to={`/product/${s.slug}`} className="group">
                     <div className={`aspect-square rounded-2xl bg-gradient-to-br ${s.image_color || 'from-gray-700 to-gray-800'} relative overflow-hidden mb-3 border border-white/5`}>
-                        {s.cover_image_url && <img src={s.cover_image_url} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />}
+                        {s.cover_image_url && <img loading="lazy" src={s.cover_image_url} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />}
                     </div>
                     <h4 className="text-white font-medium text-xs group-hover:text-brand-glow transition-colors truncate">{s.name}</h4>
                   </Link>
