@@ -260,7 +260,6 @@ const Navbar = () => {
   const { getCartCount } = useCart();
   const location = useLocation();
   const count = getCartCount();
-
   // State
   const [config, setConfig] = useState(null);
   const [navLinks, setNavLinks] = useState([]);
@@ -352,25 +351,62 @@ const Navbar = () => {
             {loading ? (
                <div className="flex gap-4 px-4"><Loader2 className="animate-spin text-slate-500" size={16}/></div>
             ) : (
-               navLinks.map((link) => (
-                <NavLink 
-                  key={link.id || link.path} 
+              // navLinks.map((link) => (
+              //   <NavLink 
+              //     key={link.id || link.path} 
+              //     to={link.path}
+              //     className={({ isActive }) => clsx(
+              //       "relative px-6 py-2 text-xs font-bold uppercase tracking-widest transition-colors duration-300 z-10",
+              //       isActive ? "text-dark-900" : "text-slate-400 hover:text-white"
+              //     )}
+              //   >
+              //     {/* {({ isActive }) => (
+              //       <>
+                      
+              //           <motion.div
+              //             layoutId="activeTab"
+              //             className="absolute inset-0 bg-gradient-to-r from-brand-glow to-blue-500 rounded-full -z-10 shadow-[0_0_20px_rgba(56,189,248,0.4)]"
+              //             transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+              //           />
+                      
+              //         {link.label}
+              //       </>
+              //     )} */}
+              //     {({ isActive }) => (
+              //       <>
+              //         <span className="text-lg font-bold tracking-wide">{link.label}</span>
+              //         <ChevronRight size={16} className={isActive ? "text-brand-glow" : "opacity-30"} />
+              //       </>
+              //     )}
+              //   </NavLink>
+              // ))
+              navLinks.map((link) => (
+                <NavLink
+                  key={link.id || link.path}
                   to={link.path}
-                  className={({ isActive }) => clsx(
-                    "relative px-6 py-2 text-xs font-bold uppercase tracking-widest transition-colors duration-300 z-10",
-                    isActive ? "text-dark-900" : "text-slate-400 hover:text-white"
-                  )}
+                  className={({ isActive }) =>
+                    clsx(
+                      "relative px-6 py-2 text-xs font-bold uppercase tracking-widest transition-colors duration-300 z-10 flex items-center gap-2",
+                      isActive ? "text-white" : "text-slate-400 hover:text-white"
+                    )
+                  }
                 >
+                  {/* Wrap content in a function to access isActive */}
                   {({ isActive }) => (
                     <>
+                      <span className="text-lg font-bold tracking-wide">{link.label}</span>
+                      <ChevronRight
+                        size={16}
+                        className={isActive ? "text-brand-glow" : "opacity-30"}
+                      />
+                      {/* If you want the animated background pill back, add it here: */}
                       {isActive && (
                         <motion.div
                           layoutId="activeTab"
-                          className="absolute inset-0 bg-gradient-to-r from-brand-glow to-blue-500 rounded-full -z-10 shadow-[0_0_20px_rgba(56,189,248,0.4)]"
+                          className="absolute inset-0 bg-gradient-to-r from-brand-glow/20 to-blue-500/20 rounded-full -z-10 border border-brand-glow/50"
                           transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                       )}
-                      {link.label}
                     </>
                   )}
                 </NavLink>
@@ -505,6 +541,26 @@ const Navbar = () => {
   );
 };
 
+// const MobileLink = ({ to, children, onClick, idx }) => (
+//   <motion.div
+//     initial={{ x: 20, opacity: 0 }}
+//     animate={{ x: 0, opacity: 1 }}
+//     transition={{ delay: idx * 0.05 }}
+//   >
+//     <NavLink 
+//       to={to} 
+//       onClick={onClick}
+//       className={({ isActive }) => clsx(
+//         "flex items-center justify-between p-4 rounded-xl transition-all duration-300 border border-transparent",
+//         isActive ? "bg-white/5 border-brand-glow/30 text-brand-glow" : "text-slate-300 hover:bg-white/5 hover:text-white"
+//       )}
+//     >
+//       <span className="text-lg font-bold tracking-wide">{children}</span>
+//       <ChevronRight size={16} className={isActive ? "text-brand-glow" : "opacity-30"} />
+//     </NavLink>
+//   </motion.div>
+// );
+
 const MobileLink = ({ to, children, onClick, idx }) => (
   <motion.div
     initial={{ x: 20, opacity: 0 }}
@@ -519,8 +575,13 @@ const MobileLink = ({ to, children, onClick, idx }) => (
         isActive ? "bg-white/5 border-brand-glow/30 text-brand-glow" : "text-slate-300 hover:bg-white/5 hover:text-white"
       )}
     >
-      <span className="text-lg font-bold tracking-wide">{children}</span>
-      <ChevronRight size={16} className={isActive ? "text-brand-glow" : "opacity-30"} />
+      {/* Access isActive here via a render function */}
+      {({ isActive }) => (
+        <>
+          <span className="text-lg font-bold tracking-wide">{children}</span>
+          <ChevronRight size={16} className={isActive ? "text-brand-glow" : "opacity-30"} />
+        </>
+      )}
     </NavLink>
   </motion.div>
 );
