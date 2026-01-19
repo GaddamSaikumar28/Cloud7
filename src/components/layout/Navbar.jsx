@@ -316,7 +316,7 @@ const Navbar = () => {
                       /* IMAGE: h-20 (80px) on mobile, h-28 (112px) on desktop.
                          'absolute' lets it grow huge without pushing the nav height.
                       */
-                      className="absolute top-1/2 left-0 -translate-y-1/2 h-30 md:h-38 w-auto max-w-none object-contain transition-transform duration-300 group-hover:scale-105" 
+                      className="absolute top-1/2 left-0 -translate-y-1/2 h-20 md:h-30 w-auto max-w-none object-contain transition-transform duration-300 group-hover:scale-105" 
                    />
                 </div>
              )}
