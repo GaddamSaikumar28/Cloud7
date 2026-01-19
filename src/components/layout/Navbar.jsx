@@ -90,7 +90,7 @@ const Navbar = () => {
 
           {/* 2. DESKTOP NAV */}
           {/* className="hidden md:flex items-center gap-1 bg-white border border-white/10 p-1 rounded-full"  className="hidden md:flex items-center gap-2"*/}
-          <div className="hidden md:flex items-center gap-1 bg-white border border-white/2 p-1 rounded-full" > 
+          <div className="hidden md:flex items-center gap-1 bg-white border border-black p-1 rounded-full" > 
             {navLinks.map((link) => (
               <NavLink 
                 key={link.path} 
@@ -110,10 +110,10 @@ const Navbar = () => {
           {/* 3. ACTIONS */}
           <div className="flex items-center gap-3">
             {/* Cart Icon */}
-            <Link to="/cart" className="relative p-2 text-slate-300 hover:text-white transition-colors bg-dark-900/50 rounded-full hover:bg-white/10">
+            <Link to="/cart" className="relative p-2 text-black hover:text-black transition-colors bg-white border border-black rounded-full hover:bg-white/10">
               <ShoppingCart size={20} />
               {count > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-glow text-dark-900 text-[9px] font-black flex items-center justify-center rounded-full shadow-md">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-glow text-black text-[9px] font-black flex items-center justify-center rounded-full shadow-md">
                   {count}
                 </span>
               )}
@@ -122,12 +122,12 @@ const Navbar = () => {
             {/* Auth Button (Desktop) */}
             <div className="hidden md:block">
               {user ? (
-                <Link to={user.role === 'admin' ? "/admin" : "/account"} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-dark-900/50 border border-white/10 hover:border-brand-glow/50 hover:bg-white/5 transition-all">
-                  <User size={14} className="text-brand-glow" />
-                  <span className="text-[10px] font-bold text-white uppercase">{user.profile?.first_name || 'Account'}</span>
+                <Link to={user.role === 'admin' ? "/admin" : "/account"} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-black border border-dark hover:border-brand-glow/50 hover:bg-white/5 transition-all">
+                  <User size={14} className="text-brand-glow text-black" />
+                  <span className="text-[10px] font-bold text-black uppercase">{user.profile?.first_name || 'Account'}</span>
                 </Link>
               ) : (
-                <Link to="/login" className="text-[10px] font-bold uppercase tracking-widest text-white px-4 py-2 border border-white/20 bg-dark-900/50 rounded-lg hover:bg-brand-glow hover:text-dark-900 hover:border-brand-glow transition-all">
+                <Link to="/login" className="text-[10px] font-bold uppercase tracking-widest text-black px-4 py-2 border border-white bg-white rounded-lg hover:bg-brand-glow hover:text-dark-900 hover:border-brand-glow transition-all">
                   Login
                 </Link>
               )}
