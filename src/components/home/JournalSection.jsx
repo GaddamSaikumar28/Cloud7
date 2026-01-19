@@ -182,7 +182,7 @@ const JournalSection = () => {
                                 {article.excerpt}
                             </p>
                             
-                            <Link to={`/blog/${article.id}`} className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white group-hover:text-purple-400 transition-colors">
+                            <Link to={`/learn`} className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white group-hover:text-purple-400 transition-colors">
                                 Read Article <ArrowUpRight size={14} />
                             </Link>
                         </div>

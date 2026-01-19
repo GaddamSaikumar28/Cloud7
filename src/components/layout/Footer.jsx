@@ -134,8 +134,8 @@ const Footer = () => {
               {settings.copyright_text}
            </p>
            <div className="flex gap-6">
-              <Link to="/privacy" className="text-xs text-slate-500 hover:text-white transition-colors">Privacy Policy</Link>
-              <Link to="/terms" className="text-xs text-slate-500 hover:text-white transition-colors">Terms of Service</Link>
+              <Link to="/" className="text-xs text-slate-500 hover:text-white transition-colors">Privacy Policy</Link>
+              <Link to="/" className="text-xs text-slate-500 hover:text-white transition-colors">Terms of Service</Link>
            </div>
         </div>
 

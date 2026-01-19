@@ -65,13 +65,26 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center">
           
           {/* 1. LOGO */}
-          <Link to="/" className="relative z-[110] flex items-center gap-2">
+          {/* <Link to="/" className="relative z-[110] flex items-center gap-2">
              {loading ? (
                 <div className="h-8 w-24 bg-white/5 rounded animate-pulse" />
              ) : (
                 <h1 className="text-xl font-black tracking-tighter text-white uppercase drop-shadow-md">
                   {config?.site_name || 'CLOUD7'}
                 </h1>
+             )}
+          </Link> */}
+          <Link to="/" className="relative z-[110] flex items-center gap-2">
+             {loading ? (
+                <div className="h-8 w-24 bg-white/5 rounded animate-pulse" />
+             ) : (
+                <img 
+                  // Priority: API Logo -> Default Constant -> Placeholder
+                  src={config?.logo_url || DEFAULT_LOGO} 
+                  alt={config?.site_name || "Cloud7"}
+                  // Adjust 'h-8 md:h-10' to change logo size
+                  className="h-8 md:h-10 w-auto object-contain" 
+                />
              )}
           </Link>
 

@@ -163,7 +163,7 @@ const LabPreview = () => {
             to="/science" 
             className="hidden md:flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 hover:bg-white/5 hover:border-brand-glow transition-all font-bold text-sm uppercase tracking-widest text-white group"
           >
-            Database <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            View Reports <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
@@ -213,18 +213,18 @@ const LabPreview = () => {
            ))}
 
            {/* View All Card (Last item) */}
-           <Link to="/science" className="group flex flex-col items-center justify-center bg-transparent border border-dashed border-white/10 rounded-2xl hover:border-brand-glow hover:bg-brand-glow/5 transition-all p-4 text-center">
+           {/* <Link to="/science" className="group flex flex-col items-center justify-center bg-transparent border border-dashed border-white/10 rounded-2xl hover:border-brand-glow hover:bg-brand-glow/5 transition-all p-4 text-center">
               <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-brand-glow">
                  <FileText size={20} />
               </div>
               <span className="text-xs font-bold text-white uppercase tracking-widest">View All Reports</span>
-           </Link>
+           </Link> */}
         </div>
 
         {/* Mobile Button */}
         <div className="mt-8 md:hidden text-center">
            <Link to="/science" className="text-brand-glow font-bold uppercase text-sm border-b border-brand-glow/30 pb-1">
-             View Full Database
+             View All Reports
            </Link>
         </div>
 

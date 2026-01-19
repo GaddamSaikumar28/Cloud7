@@ -102,17 +102,17 @@ const CTASection = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
                   >
-                      <Link 
+                      {/* <Link 
                         to={content.cta_link} 
                         className="relative inline-flex items-center gap-4 bg-white text-dark-950 px-10 py-5 rounded-xl font-black uppercase tracking-widest overflow-hidden hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] group/btn"
                       >
-                         {/* Button Hover Shine Effect */}
+                       
                          <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 z-10" />
                          
                          <span className="relative z-20 flex items-center gap-3">
                             {content.cta_text} <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
                          </span>
-                      </Link>
+                      </Link> */}
                   </motion.div>
                </div>
                
