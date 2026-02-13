@@ -44,6 +44,7 @@ const AdminLearn = lazy(() => import('../pages/admin/AdminLearn'));
 const AdminNavigation = lazy(() => import('../pages/admin/AdminNavigation'));
 const AdminFooter = lazy(() => import('../pages/admin/AdminFooter'));
 const AdminPromoConfig = lazy(() => import('../pages/admin/AdminPromoConfig'));
+const AdminPhotoMarquee = lazy(() => import('../pages/admin/MarqueeManager'));
 // Shared Loading State for Customers
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -134,6 +135,7 @@ export const router = createBrowserRouter([
       { path: "learn", element :<AdminLearn /> },
       { path: "navigation", element :<AdminNavigation /> },
       { path: "footer", element :<AdminFooter /> },
+      { path: "photo-marquee", element :<AdminPhotoMarquee />  }
     ]
   }
 ]);

@@ -1844,3 +1844,3139 @@
 // };
 
 // export default InfiniteBanner;
+
+// import React, { useState, useEffect } from 'react';
+// import { NavLink, Link, useLocation } from 'react-router-dom';
+// import { ShoppingCart, Menu, X, User, ShieldCheck, ChevronRight } from 'lucide-react';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import clsx from 'clsx';
+// import { useCart } from '../../context/CartContext';
+// import { useAuth } from '../../context/AuthContext';
+// import { layoutApi } from '../../api/layoutApi';
+
+// const Navbar = () => {
+//   const { user } = useAuth();
+//   const { getCartCount } = useCart();
+//   const location = useLocation();
+//   const count = getCartCount();
+  
+//   const [config, setConfig] = useState(null);
+//   const [navLinks, setNavLinks] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+//   const [isScrolled, setIsScrolled] = useState(false);
+
+//   useEffect(() => {
+//     const init = async () => {
+//       try {
+//         const data = await layoutApi.getNavbarData();
+//         setConfig(data.settings);
+//         setNavLinks(data.links.length > 0 ? data.links : [{ label: 'Shop', path: '/shop' }, { label: 'Science', path: '/science' }]);
+//       } catch (err) {
+//         console.error("Navbar Error:", err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     init();
+//   }, []);
+
+//   useEffect(() => {
+//     const handleScroll = () => setIsScrolled(window.scrollY > 10);
+//     window.addEventListener('scroll', handleScroll, { passive: true });
+//     return () => window.removeEventListener('scroll', handleScroll);
+//   }, []);
+
+//   useEffect(() => {
+//     setIsMobileMenuOpen(false);
+//     document.body.style.overflow = 'unset';
+//   }, [location]);
+
+//   const toggleMobileMenu = () => {
+//     const newState = !isMobileMenuOpen;
+//     setIsMobileMenuOpen(newState);
+//     document.body.style.overflow = newState ? 'hidden' : 'unset';
+//   };
+
+//   return (
+//     <>
+//       <nav 
+//         className={clsx(
+//           "fixed top-0 left-0 right-0 z-[100] my-8 transition-all duration-300 border-b",
+//           isScrolled 
+//             ? "bg-dark-950/90 backdrop-blur-xl border-white/10 py-3 shadow-2xl" 
+//             : "bg-transparent border-transparent py-5"
+//         )}
+//       >
+//         <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center">
+          
+
+//           {/* 1. LOGO (FIXED: Large visual logo, Slim navbar layout) */}
+//           <Link to="/" className="relative z-[110] flex items-center gap-2 group">
+//              {loading ? (
+//                 <div className="h-8 w-24 bg-white/5 rounded animate-pulse" />
+//              ) : (
+//                 // 1. We create a 'Wrapper' with a fixed height (h-10) and width (w-32 or w-40).
+//                 //    This forces the navbar to stay slim (it only sees this 10 unit height).
+//                 <div className="relative h-10 w-40"> 
+//                    <img 
+//                       src={config?.logo_url || DEFAULT_LOGO} 
+//                       alt={config?.site_name || "Cloud7"}
+//                       // 2. The Image is 'absolute', meaning it ignores the wrapper's boundaries.
+//                       //    - h-24: Makes the logo BIG (much taller than the wrapper).
+//                       //    - top-1/2 -translate-y-1/2: Centers it vertically perfectly.
+//                       //    - object-contain left-0: Aligns it to the left.
+//                       className="absolute top-1/2 left-0 -translate-y-1/2 h-20 md:h-24 w-auto max-w-none object-contain transition-transform duration-300 group-hover:scale-105" 
+//                    />
+//                 </div>
+//              )}
+//           </Link>
+
+//           {/* 2. DESKTOP NAV */}
+//           {/* className="hidden md:flex items-center gap-1 bg-white border border-white/10 p-1 rounded-full"  className="hidden md:flex items-center gap-2"*/}
+//           <div className="hidden md:flex items-center gap-1 bg-white border border-black p-1 rounded-full" > 
+//             {navLinks.map((link) => (
+//               <NavLink 
+//                 key={link.path} 
+//                 to={link.path}
+//                 className={({ isActive }) => clsx(
+//                   "px-6 py-2 text-[11px] font-bold uppercase tracking-widest transition-all duration-300 rounded-full",
+//                   isActive 
+//                     ? "bg-brand-glow bg-black text-white text-dark-900 shadow-[0_0_20px_rgba(14,165,233,0.4)] scale-105" 
+//                     : "text-black hover:text-black hover:bg-white/5" 
+//                 )}
+//               >
+//                 {link.label}
+//               </NavLink>
+//             ))}
+//           </div>
+
+//           {/* 3. ACTIONS */}
+//           <div className="flex items-center gap-3">
+//             {/* Cart Icon */}
+//             <Link to="/cart" className="relative p-2 text-black hover:text-white transition-colors bg-white border border-black rounded-full hover:bg-black">
+//               <ShoppingCart size={20} />
+//               {count > 0 && (
+//                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-glow text-black text-[9px] font-black flex items-center justify-center rounded-full shadow-md">
+//                   {count}
+//                 </span>
+//               )}
+//             </Link>
+
+//             {/* Auth Button (Desktop) */}
+//             <div className="hidden md:block">
+//               {user ? (
+//                 <Link to={user.role === 'admin' ? "/admin" : "/account"} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-black border border-dark hover:border-brand-glow/50 hover:bg-dark hover:text-white transition-all">
+//                   <User size={14} className="text-brand-glow text-black" />
+//                   <span className="text-[10px] font-bold text-black uppercase">{user.profile?.first_name || 'Account'}</span>
+//                 </Link>
+//               ) : (
+//                 <Link to="/login" className="text-[10px] font-bold uppercase tracking-widest text-black px-4 py-2 border border-white bg-white rounded-lg hover:bg-brand-glow hover:text-white hover:bg-black transition-all">
+//                   Login
+//                 </Link>
+//               )}
+//             </div>
+
+//             {/* Mobile Toggle */}
+//             <button 
+//               onClick={toggleMobileMenu} 
+//               className="md:hidden p-2 text-white bg-dark-900/50 rounded-full border border-white/10 relative z-[110]"
+//             >
+//               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+//             </button>
+//           </div>
+//         </div>
+//       </nav>
+
+//       {/* 4. ANIMATED MOBILE DRAWER */}
+//       <AnimatePresence>
+//         {isMobileMenuOpen && (
+//           <>
+//             {/* Backdrop */}
+//             <motion.div 
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
+//               exit={{ opacity: 0 }}
+//               onClick={toggleMobileMenu}
+//               className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[101]"
+//             />
+
+//             {/* Slide-out Panel */}
+//             <motion.div 
+//               initial={{ x: '100%' }}
+//               animate={{ x: 0 }}
+//               exit={{ x: '100%' }}
+//               transition={{ type: "spring", damping: 30, stiffness: 300 }}
+//               className="fixed top-0 right-0 bottom-0 w-[85%] max-w-[320px] bg-dark-950 border-l border-white/10 z-[102] flex flex-col shadow-2xl"
+//             >
+//               <div className="p-6 border-b border-white/10 flex justify-between items-center bg-dark-900">
+//                 <span className="text-sm font-bold text-slate-400 tracking-widest uppercase">Cloud 7</span>
+//                 <button onClick={toggleMobileMenu} className="p-2 hover:bg-white/10 rounded-full text-white transition-colors">
+//                    <X size={20} />
+//                 </button>
+//               </div>
+
+//               <div className="flex-1 overflow-y-auto p-6 space-y-2">
+//                 {/* Navigation Links */}
+//                 {navLinks.map((link, idx) => (
+//                    <MobileLink key={link.path} to={link.path} idx={idx} onClick={toggleMobileMenu}>
+//                       {link.label}
+//                    </MobileLink>
+//                 ))}
+
+//                 <div className="my-8 border-t border-dashed border-white/10" />
+
+//                 {/* Mobile Admin/User Actions */}
+//                 {user?.role === 'admin' && (
+//                   <Link to="/admin" onClick={toggleMobileMenu} className="flex items-center gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 mb-4">
+//                     <ShieldCheck size={20} />
+//                     <span className="font-bold">Admin Dashboard</span>
+//                   </Link>
+//                 )}
+
+//                 {user ? (
+//                    <Link to="/account" onClick={toggleMobileMenu} className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-brand-glow/50 transition-colors">
+//                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-glow to-blue-600 flex items-center justify-center text-white font-bold text-lg">
+//                         {user.profile?.first_name?.charAt(0) || <User size={20}/>}
+//                       </div>
+//                       <div>
+//                         <p className="text-xs text-slate-400 uppercase tracking-wider">Signed in as</p>
+//                         <p className="text-white font-bold text-lg">{user.profile?.first_name || 'User'}</p>
+//                       </div>
+//                       <ChevronRight className="ml-auto text-slate-500" size={18} />
+//                    </Link>
+//                 ) : (
+//                   <Link to="/login" onClick={toggleMobileMenu} className="w-full py-4 rounded-xl bg-white text-dark-900 font-black tracking-widest flex items-center justify-center shadow-lg hover:bg-brand-glow transition-colors">
+//                     LOGIN / JOIN
+//                   </Link>
+//                 )}
+//               </div>
+//             </motion.div>
+//           </>
+//         )}
+//       </AnimatePresence>
+//     </>
+//   );
+// };
+
+// // Helper Component for Animated Links
+// const MobileLink = ({ to, idx, onClick, children }) => (
+//   <motion.div
+//     initial={{ opacity: 0, x: 20 }}
+//     animate={{ opacity: 1, x: 0 }}
+//     transition={{ delay: idx * 0.1 }}
+//   >
+//     <Link 
+//       to={to} 
+//       onClick={onClick}
+//       className="block text-xl font-bold text-slate-300 hover:text-white hover:pl-2 transition-all py-3 border-b border-white/5 uppercase"
+//     >
+//       {children}
+//     </Link>
+//   </motion.div>
+// );
+
+// export default Navbar;
+
+
+// // // import React, { useRef } from 'react';
+// // // import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+
+// // // // --- COMPONENTS ---
+// // // import Hero from '../components/home/Hero';
+// // // import InfiniteBanner from '../components/home/InfiniteBanner'; 
+// // // import Essence from '../components/home/Essence';
+// // // import Process from '../components/home/Process';
+// // // import FeaturedProducts from '../components/home/ProductCard'; 
+// // // import CTASection from '../components/home/CTASection';
+// // // import CommunityFeedback from '../components/home/CommunityFeedback';
+
+// // // // --- ASSETS / ICONS ---
+// // // // (Assuming you have these installed via lucide-react)
+// // // import { Atom, Hexagon, Zap } from 'lucide-react';
+
+// // // const Home = () => {
+// // //   // Global Scroll Hooks for Parallax
+// // //   const { scrollYProgress } = useScroll();
+// // //   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+// // //   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+
+// // //   return (
+// // //     <div className="relative min-h-screen bg-dark-950 overflow-x-hidden selection:bg-brand-glow selection:text-dark-900">
+      
+// // //       {/* 1. SCROLL PROGRESS BAR (Fixed Top) */}
+// // //       <motion.div
+// // //         className="fixed top-0 left-0 right-0 h-1 bg-brand-glow origin-left z-[1000] shadow-[0_0_20px_#0ea5e9]"
+// // //         style={{ scaleX }}
+// // //       />
+
+// // //       {/* 2. CINEMATIC BACKGROUND SYSTEM */}
+// // //       <div className="fixed inset-0 pointer-events-none z-0">
+// // //          {/* Noise Texture */}
+// // //          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay" />
+         
+// // //          {/* Deep Space Gradients (Parallax) */}
+// // //          <motion.div style={{ y: backgroundY }} className="absolute inset-0">
+// // //              <div className="absolute top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-brand-glow/10 rounded-full blur-[150px] mix-blend-screen" />
+// // //              <div className="absolute bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-purple-600/10 rounded-full blur-[150px] mix-blend-screen" />
+// // //              <div className="absolute top-[40%] left-[20%] w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px]" />
+// // //          </motion.div>
+
+// // //          {/* Floating Geometry (Decorative) */}
+// // //          <FloatingGeometry />
+// // //       </div>
+
+// // //       {/* --- MAIN CONTENT --- */}
+// // //       <div className="relative z-10 flex flex-col">
+        
+// // //         {/* SECTION 1: HERO */}
+// // //         <section className="relative pt-0 pb-0">
+// // //            <Hero />
+// // //            {/* Fade to Black at bottom of Hero for smooth transition */}
+// // //            <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-dark-950 to-transparent pointer-events-none" />
+// // //         </section>
+
+// // //         {/* SECTION 2: SOCIAL PROOF BANNER */}
+// // //         <div className="relative z-20 -mt-10 mb-20">
+// // //            <div className="transform -rotate-1 origin-left border-y border-white/10 bg-dark-900/80 backdrop-blur-md shadow-2xl">
+// // //               <InfiniteBanner />
+// // //            </div>
+// // //         </div>
+
+// // //         {/* SECTION 3: FEATURED PRODUCTS (The "Shop" Spotlight) */}
+// // //         <RevealSection className="relative py-24">
+// // //            {/* Spotlight Glow behind products */}
+// // //            {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[600px] bg-brand-glow/5 rounded-full blur-[120px] pointer-events-none" />
+// // //             */}
+// // //            {/* <div className="relative z-10">
+// // //               <div className="text-center mb-16">
+// // //                  <span className="inline-block py-1 px-3 rounded-full bg-brand-glow/10 border border-brand-glow/20 text-brand-glow text-xs font-bold uppercase tracking-widest mb-4">
+// // //                     The Collection
+// // //                  </span>
+// // //                  <h2 className="text-4xl md:text-5xl font-black text-white italic tracking-tighter">
+// // //                     Potency <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-white">Redefined</span>
+// // //                  </h2>
+// // //               </div> */}
+// // //               <FeaturedProducts />
+// // //            {/* </div> */}
+// // //         </RevealSection>
+
+// // //         {/* <NebulaSeparator /> */}
+
+// // //         {/* SECTION 4: THE LAB (Science & Process Combined) */}
+// // //         <section className="relative py-32 overflow-hidden">
+// // //            {/* Tech Grid Background specifically for this section */}
+// // //            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_70%)] pointer-events-none" />
+           
+// // //            <RevealSection>
+// // //               <Essence />
+// // //            </RevealSection>
+
+// // //            <div className="h-24" /> {/* Spacer */}
+
+// // //            <RevealSection>
+// // //               <Process />
+// // //            </RevealSection>
+// // //         </section>
+
+// // //         {/* <NebulaSeparator direction="left" /> */}
+
+// // //         {/* SECTION 5: CTA (High Energy) */}
+// // //         <RevealSection className="py-20 relative">
+// // //              <CTASection />
+// // //         </RevealSection>
+
+// // //         {/* SECTION 6: COMMUNITY (Reviews) */}
+// // //         <section className="relative py-24 bg-dark-900 border-t border-white/5">
+// // //            <CommunityFeedback />
+// // //         </section>
+
+// // //       </div>
+// // //     </div>
+// // //   );
+// // // };
+
+// // // // --- SUB-COMPONENT: ANIMATED SEPARATOR ---
+// // // const NebulaSeparator = ({ direction = "right" }) => {
+// // //   return (
+// // //     <div className="relative w-full h-px my-12 md:my-24 pointer-events-none overflow-visible">
+// // //        {/* The glowing line */}
+// // //        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-glow/30 to-transparent" />
+       
+// // //        {/* The Energy Pulse */}
+// // //        <motion.div 
+// // //          animate={{ x: direction === "right" ? ["-100%", "100%"] : ["100%", "-100%"] }}
+// // //          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+// // //          className="absolute top-[-1px] left-0 w-[40%] h-[3px] bg-gradient-to-r from-transparent via-brand-glow to-transparent blur-[2px]"
+// // //        />
+       
+// // //        {/* Center Starburst */}
+// // //        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-brand-glow/10 rounded-full blur-[40px]" />
+// // //     </div>
+// // //   );
+// // // };
+
+// // // // --- SUB-COMPONENT: REVEAL WRAPPER ---
+// // // // Wraps sections to fade/slide them in as you scroll
+// // // const RevealSection = ({ children, className }) => {
+// // //   return (
+// // //     <motion.div
+// // //       initial={{ opacity: 0, y: 60 }}
+// // //       whileInView={{ opacity: 1, y: 0 }}
+// // //       viewport={{ once: true, margin: "-100px" }}
+// // //       transition={{ duration: 0.8, ease: "easeOut" }}
+// // //       className={className}
+// // //     >
+// // //       {children}
+// // //     </motion.div>
+// // //   );
+// // // };
+
+// // // // --- SUB-COMPONENT: FLOATING GEOMETRY ---
+// // // // Purely decorative background elements
+// // // const FloatingGeometry = () => {
+// // //     return (
+// // //         <div className="absolute inset-0 overflow-hidden opacity-20 pointer-events-none">
+// // //             {/* Element 1: Hexagon */}
+// // //             <motion.div 
+// // //                 animate={{ y: [0, -40, 0], rotate: [0, 180, 360], opacity: [0.2, 0.5, 0.2] }}
+// // //                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+// // //                 className="absolute top-[10%] left-[5%] text-brand-glow"
+// // //             >
+// // //                 <Hexagon size={120} strokeWidth={0.5} />
+// // //             </motion.div>
+
+// // //             {/* Element 2: Atom */}
+// // //             <motion.div 
+// // //                 animate={{ y: [0, 60, 0], rotate: [0, -180, 0], opacity: [0.1, 0.3, 0.1] }}
+// // //                 transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+// // //                 className="absolute top-[40%] right-[5%] text-purple-500"
+// // //             >
+// // //                 <Atom size={200} strokeWidth={0.5} />
+// // //             </motion.div>
+
+// // //             {/* Element 3: Spark */}
+// // //             <motion.div 
+// // //                 animate={{ scale: [1, 1.5, 1], opacity: [0, 0.4, 0] }}
+// // //                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+// // //                 className="absolute bottom-[20%] left-[20%] text-white"
+// // //             >
+// // //                 <Zap size={40} className="blur-sm" />
+// // //             </motion.div>
+// // //         </div>
+// // //     )
+// // // }
+
+// // // export default Home;
+
+// // // import React from 'react';
+// // // import { motion } from 'framer-motion';
+
+// // // // --- COMPONENTS ---
+// // // import Hero from '../components/home/Hero';
+// // // import InfiniteBanner from '../components/home/InfiniteBanner'; 
+// // // import Essence from '../components/home/Essence';
+// // // import Process from '../components/home/Process';
+// // // import FeaturedProducts from '../components/home/ProductCard'; 
+// // // import CTASection from '../components/home/CTASection';
+// // // import CommunityFeedback from '../components/home/CommunityFeedback';
+
+// // // const Home = () => {
+// // //   return (
+// // //     // Removed overflow-x-hidden from main div to prevent scroll-jacking issues
+// // //     <div className="relative min-h-screen bg-dark-950 selection:bg-brand-glow selection:text-dark-900">
+      
+// // //       {/* 1. SIMPLE BACKGROUND SYSTEM (Static for Performance) */}
+// // //       <div className="fixed inset-0 pointer-events-none z-0">
+// // //          {/* Subtle Noise Texture - Reduced opacity */}
+// // //          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
+         
+// // //          {/* Static Glows (No parallax/transforms) */}
+// // //          <div className="absolute top-0 left-[-10%] w-[600px] h-[600px] bg-brand-glow/5 rounded-full blur-[120px]" />
+// // //          <div className="absolute bottom-0 right-[-10%] w-[500px] h-[500px] bg-purple-900/5 rounded-full blur-[120px]" />
+// // //       </div>
+
+// // //       {/* --- MAIN CONTENT --- */}
+// // //       <div className="relative z-10">
+        
+// // //         {/* SECTION 1: HERO (Eagerly loaded) */}
+// // //         <section className="relative">
+// // //            <Hero />
+// // //         </section>
+
+// // //         {/* SECTION 2: SOCIAL PROOF BANNER (Simplified) */}
+// // //         <div className="relative z-20 mb-12">
+// // //            <div className="border-y border-white/5 bg-dark-900/50 backdrop-blur-sm">
+// // //               <InfiniteBanner />
+// // //            </div>
+// // //         </div>
+
+// // //         {/* SECTION 3: FEATURED PRODUCTS */}
+// // //         <StaticReveal className="relative py-16">
+// // //            <FeaturedProducts />
+// // //         </StaticReveal>
+
+// // //         {/* SECTION 4: THE LAB (Reduced complexity) */}
+// // //         <section className="relative py-20">
+// // //            <StaticReveal>
+// // //               <Essence />
+// // //            </StaticReveal>
+
+// // //            <div className="h-16" />
+
+// // //            <StaticReveal>
+// // //               <Process />
+// // //            </StaticReveal>
+// // //         </section>
+
+// // //         {/* SECTION 5: CTA */}
+// // //         <StaticReveal className="py-16">
+// // //              <CTASection />
+// // //         </StaticReveal>
+
+// // //         {/* SECTION 6: COMMUNITY */}
+// // //         <section className="relative py-20 bg-dark-900/30 border-t border-white/5">
+// // //            <CommunityFeedback />
+// // //         </section>
+
+// // //       </div>
+// // //     </div>
+// // //   );
+// // // };
+
+// // // // --- OPTIMIZED REVEAL WRAPPER ---
+// // // // Uses a simpler "Fade In" without heavy Y-axis travel or springs
+// // // const StaticReveal = ({ children, className }) => {
+// // //   return (
+// // //     <motion.div
+// // //       initial={{ opacity: 0 }}
+// // //       whileInView={{ opacity: 1 }}
+// // //       viewport={{ once: true, margin: "-50px" }}
+// // //       transition={{ duration: 0.5, ease: "easeOut" }}
+// // //       className={className}
+// // //     >
+// // //       {children}
+// // //     </motion.div>
+// // //   );
+// // // };
+
+// // // export default Home;
+
+// // import React from 'react';
+// // import { motion } from 'framer-motion';
+
+// // import PromoCarousel from '../components/home/PromoCarousel';
+// // // --- COMPONENTS ---
+// // import Hero from '../components/home/Hero';
+// // import InfiniteBanner from '../components/home/InfiniteBanner'; 
+// // import Essence from '../components/home/Essence';
+// // import Process from '../components/home/Process';
+// // import FeaturedProducts from '../components/home/ProductCard'; 
+// // import CTASection from '../components/home/CTASection';
+// // import CommunityFeedback from '../components/home/CommunityFeedback';
+
+// // const Home = () => {
+// //   return (
+// //     // Base layout: Simple dark background, no heavy noise/overlays
+// //     <div className="min-h-screen bg-dark-950 text-white selection:bg-brand-glow selection:text-dark-900">
+      
+// //       <section className="relative z-0">
+// //          <PromoCarousel />
+// //       </section>
+
+// //       {/* SECTION 1: HERO */}
+// //       {/* Kept separate for z-index layering if Hero has its own image */}
+// //       <section className="relative">
+// //          <Hero />
+// //       </section>
+
+// //       {/* SECTION 2: SOCIAL PROOF */}
+// //       {/* Simple border-y for separation, removed the rotation/tilt for better rendering */}
+// //       <div className="relative z-10 border-y border-white/5 bg-dark-900">
+// //           <InfiniteBanner />
+// //       </div>
+
+// //       {/* SECTION 3: FEATURED PRODUCTS */}
+// //       <section className="py-20 md:py-32 max-w-7xl mx-auto px-4">
+// //          <FadeIn>
+// //             <FeaturedProducts />
+// //          </FadeIn>
+// //       </section>
+
+// //       {/* SECTION 4: SCIENCE & PROCESS */}
+// //       {/* A subtle change in background color to separate this section visually */}
+// //       <section className="py-24 bg-dark-900/50 border-t border-white/5">
+// //          <div className="max-w-7xl mx-auto px-4 space-y-24">
+// //             <FadeIn>
+// //               <Essence />
+// //             </FadeIn>
+            
+// //             <FadeIn>
+// //               <Process />
+// //             </FadeIn>
+// //          </div>
+// //       </section>
+
+// //       {/* SECTION 5: CTA */}
+// //       <section className="py-20">
+// //          <FadeIn>
+// //              <CTASection />
+// //          </FadeIn>
+// //       </section>
+
+// //       {/* SECTION 6: COMMUNITY */}
+// //       <section className="py-24 bg-dark-900 border-t border-white/5">
+// //          <CommunityFeedback />
+// //       </section>
+
+// //     </div>
+// //   );
+// // };
+
+// // // --- UTILITY: LIGHTWEIGHT FADE ---
+// // // A very simple wrapper that triggers once. 
+// // // Much lighter than complex scroll hooks.
+// // const FadeIn = ({ children }) => {
+// //   return (
+// //     <motion.div
+// //       initial={{ opacity: 0, y: 20 }}
+// //       whileInView={{ opacity: 1, y: 0 }}
+// //       viewport={{ once: true, margin: "-50px" }} // Triggers slightly before element is in full view
+// //       transition={{ duration: 0.6, ease: "easeOut" }}
+// //     >
+// //       {children}
+// //     </motion.div>
+// //   );
+// // };
+
+// // export default Home;
+// import React from 'react';
+// import { motion } from 'framer-motion';
+
+// // --- COMPONENTS ---
+// // import Hero from '../components/home/Hero'; // <-- Replaced by PromoCarousel
+// import PromoCarousel from '../components/home/PromoCarousel';
+// import InfiniteBanner from '../components/home/InfiniteBanner'; 
+// import Essence from '../components/home/Essence';
+// import Process from '../components/home/Process';
+// import FeaturedProducts from '../components/home/ProductCard'; 
+// import CTASection from '../components/home/CTASection';
+// import CommunityFeedback from '../components/home/CommunityFeedback';
+// import Hero from '../components/home/Hero';
+// import LabPreview from '../components/home/LabPreview';     // <--- NEW: Lab/Science
+// import JournalSection from '../components/home/JournalSection'; // <--- NEW: Blog/Articles
+
+
+// const Home = () => {
+//   return (
+//     // Base layout: Simple dark background
+//     <div className="min-h-screen bg-dark-950 text-white selection:bg-brand-glow selection:text-dark-900">
+      
+//       {/* SECTION 1: DYNAMIC PROMO BANNER (HERO) */}
+//       <section className="relative z-0">
+//          <PromoCarousel />
+//       </section>
+
+//       <section className="relative ">
+//          <Hero />
+//       </section>
+
+//       {/* SECTION 2: SOCIAL PROOF */}
+//       {/* Added border-t-0 to merge seamlessly with the banner if needed, or keep border */}
+//       <div className="relative z-10 border-y border-white/5 bg-dark-900">
+//           <InfiniteBanner />
+//       </div>
+
+//       {/* SECTION 3: FEATURED PRODUCTS */}
+//       <section className="py-20 md:py-32 max-w-7xl mx-auto px-4">
+//          <FadeIn>
+//             <FeaturedProducts />
+//          </FadeIn>
+//       </section>
+
+//       {/* SECTION 4: SCIENCE & PROCESS */}
+//       <section className="py-24 bg-dark-900/50 border-t border-white/5">
+//          <div className="max-w-7xl mx-auto px-4 space-y-24">
+//             <FadeIn>
+//               <Essence />
+//             </FadeIn>
+            
+//             <FadeIn>
+//               <Process />
+//             </FadeIn>
+//          </div>
+//       </section>
+
+//       {/* SECTION 5: CTA */}
+//       <section className="py-20">
+//          <FadeIn>
+//              <CTASection />
+//          </FadeIn>
+//       </section>
+
+//       {/* SECTION 6: COMMUNITY */}
+//       <section className="py-24 bg-dark-900 border-t border-white/5">
+//          <CommunityFeedback />
+//       </section>
+
+//     </div>
+//   );
+// };
+
+// // --- UTILITY: LIGHTWEIGHT FADE ---
+// const FadeIn = ({ children }) => {
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0, y: 20 }}
+//       whileInView={{ opacity: 1, y: 0 }}
+//       viewport={{ once: true, margin: "-50px" }}
+//       transition={{ duration: 0.6, ease: "easeOut" }}
+//     >
+//       {children}
+//     </motion.div>
+//   );
+// };
+
+// export default Home;
+// src/pages/Home.jsx
+
+// // import React, { useEffect, useState } from 'react';
+// // import { Link } from 'react-router-dom';
+// // import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
+// // import { 
+// //   ArrowRight, Zap, ShoppingBag, Activity, ShieldCheck, 
+// //   Microscope, Timer, TrendingUp, AlertCircle 
+// // } from 'lucide-react';
+// // import { supabase } from '../../client/supabaseClient';
+
+// // const DUMMY_IMAGE = "https://via.placeholder.com/600x600/transparent/ffffff?text=Protocol+Alpha";
+
+// // /**
+// //  * ------------------------------------------------------------------
+// //  * MAIN COMPONENT: Featured Protocols
+// //  * ------------------------------------------------------------------
+// //  */
+// // const FeaturedProducts = () => {
+// //   const [products, setProducts] = useState([]);
+// //   const [loading, setLoading] = useState(true);
+
+// //   useEffect(() => {
+// //     const fetchFeatured = async () => {
+// //       // Fetch products marked as 'is_featured'
+// //       const { data, error } = await supabase
+// //         .from('products')
+// //         .select('*, product_variants(*), category:categories(*)')
+// //         .eq('is_active', true)
+// //         .eq('is_featured', true)
+// //         .limit(3); // Fetch a few, but we optimize for 1
+
+// //       if (!error && data) setProducts(data);
+// //       setLoading(false);
+// //     };
+// //     fetchFeatured();
+// //   }, []);
+
+// //   if (loading) return null;
+// //   if (products.length === 0) return null;
+
+// //   // Decide Layout: If 1 product, use Spotlight. If more, use Grid.
+// //   const isSingleFeature = products.length === 1;
+
+// //   return (
+// //     <section className="relative py-10 bg-dark-900 overflow-hidden">
+      
+// //       {/* Background Decor (Grid & Glow) */}
+// //       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] opacity-20 pointer-events-none" />
+// //       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-glow/5 rounded-full blur-[120px] pointer-events-none" />
+
+// //       <div className="container mx-auto px-4 relative z-10">
+        
+// //         {/* Section Header */}
+// //         <div className="mb-16 text-center">
+// //           {/* <motion.div 
+// //             initial={{ opacity: 0, y: 20 }}
+// //             whileInView={{ opacity: 1, y: 0 }}
+// //             viewport={{ once: true }}
+// //             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-glow/20 bg-brand-glow/5 mb-6"
+// //           >
+// //              <Zap size={12} className="text-brand-glow animate-pulse" />
+// //              <span className="text-[10px] font-bold tracking-[0.3em] text-brand-glow uppercase">
+// //                Featured Protocol
+// //              </span>
+// //           </motion.div> */}
+          
+// //           <motion.h2 
+// //              initial={{ opacity: 0, scale: 0.9 }}
+// //              whileInView={{ opacity: 1, scale: 1 }}
+// //              viewport={{ once: true }}
+// //              className="text-4xl md:text-5xl font-black italic tracking-tighter text-white uppercase"
+// //           >
+// //             Elite <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-blue-500">Performance</span>
+// //           </motion.h2>
+// //         </div>
+
+// //         {/* --- DYNAMIC RENDER --- */}
+// //         {isSingleFeature ? (
+// //           <SpotlightStage product={products[0]} />
+// //         ) : (
+// //           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+// //              {products.map(p => <StandardCard key={p.id} product={p} />)}
+// //           </div>
+// //         )}
+
+// //       </div>
+// //     </section>
+// //   );
+// // };
+
+// // /**
+// //  * ------------------------------------------------------------------
+// //  * SUB-COMPONENT: Spotlight Stage (The "Futuristic" Single View)
+// //  * ------------------------------------------------------------------
+// //  */
+// // const SpotlightStage = ({ product }) => {
+// //   // Logic to get price
+// //   const activeVariants = product.product_variants?.filter(v => v.is_active !== false) || [];
+// //   const prices = activeVariants.map(v => Number(v.price));
+// //   const minPrice = prices.length > 0 ? Math.min(...prices).toFixed(2) : "0.00";
+  
+// //   // Mouse tracking for "Holographic" tilt effect
+// //   const mouseX = useMotionValue(0);
+// //   const mouseY = useMotionValue(0);
+
+// //   function handleMouseMove({ currentTarget, clientX, clientY }) {
+// //     let { left, top, width, height } = currentTarget.getBoundingClientRect();
+// //     mouseX.set(clientX - left - width / 2);
+// //     mouseY.set(clientY - top - height / 2);
+// //   }
+
+// //   return (
+// //     <motion.div 
+// //       initial={{ opacity: 0, y: 40 }}
+// //       whileInView={{ opacity: 1, y: 0 }}
+// //       viewport={{ once: true }}
+// //       transition={{ duration: 0.8 }}
+// //       onMouseMove={handleMouseMove}
+// //       className="relative w-full max-w-6xl mx-auto bg-white/5 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md group"
+// //     >
+// //       <div className="grid grid-cols-1 lg:grid-cols-2">
+        
+// //         {/* LEFT: The Visual Stage */}
+// //         <div className="relative h-[500px] lg:h-[600px] flex items-center justify-center p-12 overflow-hidden bg-gradient-to-b from-white/5 to-transparent">
+           
+// //            {/* Animated Background Rings */}
+// //            <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+// //               <div className="w-[300px] h-[300px] border border-brand-glow rounded-full animate-[spin_10s_linear_infinite]" />
+// //               <div className="absolute w-[450px] h-[450px] border border-dashed border-white/20 rounded-full animate-[spin_20s_linear_infinite_reverse]" />
+// //            </div>
+
+// //            {/* Floating Product Image */}
+// //            <motion.div 
+// //              className="relative z-20 w-full max-w-sm"
+// //              animate={{ y: [0, -20, 0] }}
+// //              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+// //            >
+// //               {/* Glow Behind */}
+// //               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-brand-glow/20 blur-[80px] rounded-full" />
+              
+// //               <img 
+// //                 src={product.cover_image_url || DUMMY_IMAGE} 
+// //                 alt={product.name} 
+// //                 className="relative z-10 w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform transition-transform duration-500 group-hover:scale-110" 
+// //                 loading="lazy"
+// //               />
+// //            </motion.div>
+
+// //            {/* Scanning Line Effect (On Hover) */}
+// //            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-glow/10 to-transparent h-[10%] w-full -translate-y-full group-hover:animate-scan pointer-events-none z-30 opacity-0 group-hover:opacity-100" />
+// //         </div>
+
+// //         {/* RIGHT: Data & Specs */}
+// //         <div className="p-8 lg:p-12 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-white/10 relative">
+           
+// //            {/* Header Info */}
+// //            <div className="mb-8">
+// //               <div className="flex items-center gap-3 mb-4">
+// //                  <span className="px-3 py-1 bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold uppercase rounded">
+// //                     In Stock
+// //                  </span>
+// //                  <span className="px-3 py-1 bg-brand-glow/10 border border-brand-glow/20 text-brand-glow text-xs font-bold uppercase rounded flex items-center gap-1">
+// //                     <ShieldCheck size={12} /> Lab Verified
+// //                  </span>
+// //               </div>
+// //               <h1 className="text-4xl md:text-5xl font-black text-white italic tracking-tighter uppercase mb-4 leading-[0.9]">
+// //                  {product.name}
+// //               </h1>
+// //               <p className="text-lg text-slate-400 font-light leading-relaxed border-l-2 border-white/10 pl-4">
+// //                  {product.tagline || product.description?.substring(0, 100) + '...'}
+// //               </p>
+// //            </div>
+
+// //            {/* Tech Specs Grid (Seller Perspective: Show why it's good) */}
+// //            <div className="grid grid-cols-2 gap-4 mb-8">
+// //               <SpecBox icon={Activity} label="Potency" value={product.potency || "High"} />
+// //               <SpecBox icon={Timer} label="Onset" value="15-20 Min" />
+// //               <SpecBox icon={Microscope} label="Purity" value="99.8%" />
+// //               <SpecBox icon={TrendingUp} label="Effect" value="Focus" />
+// //            </div>
+
+// //            {/* Price & Action */}
+// //            <div className="mt-auto pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6">
+// //               <div>
+// //                  <p className="text-xs text-slate-500 uppercase font-bold tracking-widest mb-1">Starting At</p>
+// //                  <div className="text-4xl font-mono font-bold text-white">${minPrice}</div>
+// //               </div>
+              
+// //               <Link to={`/shop/${product.slug}`} className="w-full sm:w-auto">
+// //                  <button className="w-full relative px-8 py-4 bg-brand-glow text-dark-900 font-bold text-sm tracking-widest uppercase rounded-xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(14,165,233,0.3)] hover:shadow-[0_0_50px_rgba(14,165,233,0.5)] overflow-hidden group/btn">
+// //                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+// //                     <span className="relative flex items-center justify-center gap-3">
+// //                        View Product <ArrowRight size={18} />
+// //                     </span>
+// //                  </button>
+// //               </Link>
+// //            </div>
+
+// //         </div>
+// //       </div>
+// //     </motion.div>
+// //   );
+// // };
+
+// // /**
+// //  * ------------------------------------------------------------------
+// //  * SUB-COMPONENT: Spec Box (For the Grid)
+// //  * ------------------------------------------------------------------
+// //  */
+// // const SpecBox = ({ icon: Icon, label, value }) => (
+// //    <div className="bg-dark-950/50 border border-white/5 rounded-xl p-4 flex items-center gap-4 hover:border-brand-glow/30 transition-colors group">
+// //       <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 group-hover:text-brand-glow group-hover:bg-brand-glow/10 transition-colors">
+// //          <Icon size={20} />
+// //       </div>
+// //       <div>
+// //          <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{label}</div>
+// //          <div className="text-white font-bold font-mono">{value}</div>
+// //       </div>
+// //    </div>
+// // );
+
+
+// // /**
+// //  * ------------------------------------------------------------------
+// //  * SUB-COMPONENT: Standard Card (Fallback for multiple products)
+// //  * ------------------------------------------------------------------
+// //  */
+// // const StandardCard = ({ product }) => {
+// //    const activeVariants = product.product_variants?.filter(v => v.is_active !== false) || [];
+// //    const minPrice = activeVariants.length > 0 ? Math.min(...activeVariants.map(v => Number(v.price))).toFixed(2) : "0.00";
+
+// //    return (
+// //       <Link to={`/product/${product.slug}`} className="group relative block h-full">
+// //          <div className="h-full bg-white/5 border border-white/10 rounded-2xl p-6 overflow-hidden hover:border-brand-glow/50 transition-colors flex flex-col">
+// //             <div className="relative aspect-[4/5] bg-dark-950/50 rounded-xl mb-6 flex items-center justify-center overflow-hidden">
+// //                <div className="absolute inset-0 bg-gradient-to-tr from-brand-glow/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+// //                <img 
+// //                   src={product.cover_image_url || DUMMY_IMAGE} 
+// //                   alt={product.name} 
+// //                   className="relative z-10 w-3/4 h-auto object-contain transition-transform duration-500 group-hover:scale-110" 
+// //                   loading="lazy"
+// //                />
+// //             </div>
+// //             <div className="mt-auto">
+// //                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-brand-glow transition-colors">{product.name}</h3>
+// //                <div className="flex items-center justify-between pt-4 border-t border-white/10">
+// //                   <span className="text-brand-glow font-mono text-lg font-bold">${minPrice}</span>
+// //                   <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-brand-glow group-hover:text-dark-900 transition-colors">
+// //                      <ArrowRight size={14} />
+// //                   </div>
+// //                </div>
+// //             </div>
+// //          </div>
+// //       </Link>
+// //    );
+// // };
+
+// // export default FeaturedProducts;
+
+// import React, { useEffect, useState } from 'react';
+// import { Link } from 'react-router-dom';
+// import { motion } from 'framer-motion';
+// import { supabase } from '../../client/supabaseClient';
+
+// const DUMMY_IMAGE = "https://placehold.co/400x600/png"; // Fallback
+
+// const FeaturedProducts = () => {
+//   const [variants, setVariants] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchVariants = async () => {
+//       // Fetch all active variants. 
+//       // Assumption: You want to show the specific flavors of your single product.
+//       const { data, error } = await supabase
+//         .from('product_variants')
+//         .select('*')
+//         .eq('is_active', true)
+//         .order('price', { ascending: true }); // Or order by SKU/Name
+
+//       if (!error && data) setVariants(data);
+//       setLoading(false);
+//     };
+//     fetchVariants();
+    
+//   }, []);
+
+//   console.log(variants);
+//   if (loading) return null;
+
+//   // Helper to format SKU into a readable Name (since we don't have a 'name' column in variants yet)
+//   // Example SKU: "7OH--BLUE-RAZZ" -> "Blue Razz"
+//   const formatName = (sku) => {
+//     if (!sku) return "Unknown Flavor";
+//     const parts = sku.split('--');
+//     if (parts.length > 1) {
+//       // Remove generic codes, replace hyphens with spaces
+//       return parts[1].replace(/_/g, ' ').replace(/-/g, ' '); 
+//     }
+//     return sku;
+//   };
+
+//   return (
+//     <section className="relative w-full max-w-7xl mx-auto px-4 z-10">
+      
+//       {/* Optional Header - Keep it minimal */}
+//       <div className="text-center mb-12">
+//         <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight">
+//           Choose Your <span className="text-brand-glow">Flavor</span>
+//         </h2>
+//         <p className="text-slate-400 mt-4 max-w-lg mx-auto">
+//           Premium hemp-derived cannabinoids. Select a profile below.
+//         </p>
+//       </div>
+
+//       {/* THE GRID: Matches the clean 3-4 column layout */}
+//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+//         {variants.map((variant, index) => (
+//           <VariantCard 
+//             key={variant.id} 
+//             variant={variant} 
+//             idx={index}
+//             name={formatName(variant.sku)} 
+//           />
+//         ))}
+//       </div>
+
+//     </section>
+//   );
+// };
+
+// const VariantCard = ({ variant, name, idx }) => {
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0, y: 20 }}
+//       whileInView={{ opacity: 1, y: 0 }}
+//       viewport={{ once: true }}
+//       transition={{ delay: idx * 0.1, duration: 0.5 }}
+//       className="group relative flex flex-col h-full"
+//     >
+//       {/* CARD CONTAINER */}
+//       {/* We use a very dark background with a subtle border, mimicking the reference */}
+//       <div className="flex-1 bg-dark-900 border border-white/5 rounded-3xl p-6 flex flex-col items-center text-center transition-all duration-300 hover:border-brand-glow/30 hover:bg-white/5 hover:-translate-y-2 hover:shadow-2xl">
+        
+//         {/* 1. TITLE (Top) */}
+//         <h3 className="text-xl font-bold text-white uppercase tracking-wider mb-2">
+//           {name}
+//         </h3>
+//         <p className="text-sm text-brand-glow font-mono font-medium mb-6">
+//            ${variant.price}
+//         </p>
+
+//         {/* 2. IMAGE (Middle - Tall & Clean) */}
+//         <div className="relative w-full aspect-[3/4] mb-8 flex items-center justify-center">
+//            {/* Subtle glow behind image on hover */}
+//            <div className="absolute inset-0 bg-brand-glow/20 blur-[60px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+           
+//            <img 
+//             src={variant.image_url || DUMMY_IMAGE} 
+//             alt={name}
+//             className="relative z-10 w-full h-full object-contain drop-shadow-xl transform transition-transform duration-500 group-hover:scale-110"
+//            />
+//         </div>
+
+//         {/* 3. BUTTON (Bottom) */}
+//         {/* Using a pill shape button like the reference */}
+//         <div className="w-full mt-auto">
+//           <Link to={`/product/${variant.product_id}?variant=${variant.id}`}>
+//             <button className="w-full py-3.5 px-6 bg-dark-950 text-white font-bold text-sm uppercase tracking-widest rounded-full border border-white/10 hover:bg-brand-glow hover:text-dark-950 hover:border-brand-glow transition-all active:scale-95">
+//               Shop Now
+//             </button>
+//           </Link>
+//         </div>
+
+//       </div>
+//     </motion.div>
+//   );
+// };
+
+// export default FeaturedProducts;
+
+
+// // // // // import React, { useEffect, useState } from 'react';
+// // // // // import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+// // // // // import { ArrowRight, Sparkles, Loader2, Star, Zap } from 'lucide-react';
+// // // // // import { Link } from 'react-router-dom';
+// // // // // import { heroApi } from '../../api/heroApi';
+
+// // // // // const Hero = () => {
+// // // // //   const [data, setData] = useState(null);
+// // // // //   const [loading, setLoading] = useState(true);
+
+// // // // //   // --- PARALLAX PHYSICS ---
+// // // // //   const { scrollY } = useScroll();
+// // // // //   const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 };
+  
+// // // // //   // Parallax Values
+// // // // //   const yText = useSpring(useTransform(scrollY, [0, 500], [0, 150]), springConfig);
+// // // // //   const yMain = useSpring(useTransform(scrollY, [0, 500], [0, 50]), springConfig);
+// // // // //   const yFront = useSpring(useTransform(scrollY, [0, 500], [0, -80]), springConfig); // Moves Up fast
+// // // // //   const yBack = useSpring(useTransform(scrollY, [0, 500], [0, 30]), springConfig);   // Moves Down slow
+// // // // //   const opacityFade = useTransform(scrollY, [0, 400], [1, 0]);
+
+// // // // //   useEffect(() => {
+// // // // //     const loadHero = async () => {
+// // // // //       try {
+// // // // //         const heroData = await heroApi.getActiveHero();
+// // // // //         if (heroData) setData(heroData);
+// // // // //       } catch (e) {
+// // // // //         console.error("Hero load failed", e);
+// // // // //       } finally {
+// // // // //         setLoading(false);
+// // // // //       }
+// // // // //     };
+// // // // //     loadHero();
+// // // // //     console.log(data,"heroapi response");
+// // // // //   }, []);
+
+// // // // //   if (loading) {
+// // // // //     return (
+// // // // //       <div className="h-screen w-full bg-dark-950 flex items-center justify-center">
+// // // // //          <Loader2 className="animate-spin text-brand-glow" size={32} />
+// // // // //       </div>
+// // // // //     );
+// // // // //   }
+// // // // //   console.log(data,"raw data of the api response");
+// // // // //   // --- DATA ---
+// // // // //   const content = data || {
+// // // // //     headline: "Elevate Your Experience",
+// // // // //     subheadline: "Pure. Precise. Cloud7.",
+// // // // //     cta_text: "EXPLORE COLLECTION",
+// // // // //     cta_link: "/shop",
+// // // // //     glow_color: "#0ea5e9",
+// // // // //     hero_images: []
+// // // // //   };
+
+// // // // //   // Safe Image Handling (Ensures 4 slots)
+// // // // //   const rawImages = content.hero_images?.length > 0 
+// // // // //     ? content.hero_images 
+// // // // //     : (content.hero_image_url ? [content.hero_image_url] : []);
+// // // // //   const images = [...rawImages, null, null, null, null].slice(0, 4); 
+// // // // //   const hasMultipleImages = rawImages.length > 1;
+
+// // // // //   return (
+// // // // //     <div className="relative bg-dark-950 overflow-hidden min-h-screen">
+      
+// // // // //       {/* 1. TOP TICKER */}
+// // // // //       {/* <TopTicker /> */}
+
+// // // // //       {/* 2. BACKGROUND: AURORA SYSTEM */}
+// // // // //       <div className="absolute inset-0 z-0 pointer-events-none">
+// // // // //         <AuroraBackground baseColor={content.glow_color} />
+// // // // //         {/* Texture Overlay */}
+// // // // //         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+// // // // //         {/* Bottom Fade to blend with next section */}
+// // // // //         <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-dark-950 to-transparent" />
+// // // // //       </div>
+
+// // // // //       {/* 3. MAIN CONTENT */}
+// // // // //       <section className="relative z-10 w-full min-h-[110vh] flex flex-col items-center pt-32 pb-20">
+        
+// // // // //         {/* A. TEXT LAYER */}
+// // // // //         <motion.div 
+// // // // //           style={{ y: yText, opacity: opacityFade }}
+// // // // //           className="container mx-auto px-5 text-center max-w-5xl relative z-20 mb-4"
+// // // // //         >
+// // // // //           {/* Badge */}
+// // // // //           <motion.div 
+// // // // //             // initial={{ opacity: 0, y: -20 }}
+// // // // //             // animate={{ opacity: 1, y: 0 }}
+// // // // //             // transition={{ duration: 0.8 }}
+// // // // //             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_0_20px_rgba(14,165,233,0.3)] mb-8"
+// // // // //           >
+// // // // //             <Sparkles size={12} className="text-brand-glow animate-pulse" />
+// // // // //             <span className="text-[5px] font-bold tracking-[0.25em] text-white uppercase">
+// // // // //               Next Generation Potency
+// // // // //             </span>
+// // // // //           </motion.div>
+
+// // // // //           {/* Headline */}
+// // // // //           <motion.h1 
+// // // // //             // initial={{ opacity: 0, scale: 0.9 }}
+// // // // //             // animate={{ opacity: 1, scale: 1 }}
+// // // // //             // transition={{ duration: 1, ease: "easeOut" }}
+// // // // //             className="text-6l md:text-7xl lg:text-9l font-black tracking-tighter leading-[0.85] text-white mb-6 drop-shadow-2xl"
+// // // // //           >
+// // // // //             {content.headline}
+// // // // //           </motion.h1>
+
+// // // // //           {/* Subheadline */}
+// // // // //           {/* <motion.p 
+// // // // //             initial={{ opacity: 0 }}
+// // // // //             animate={{ opacity: 1 }}
+// // // // //             transition={{ delay: 0.3, duration: 1 }}
+// // // // //             className="text-lg md:text-2xl text-slate-300 font-light max-w-2xl mx-auto leading-relaxed drop-shadow-md"
+// // // // //           >
+// // // // //             {content.subheadline}
+// // // // //           </motion.p> */}
+// // // // //         </motion.div>
+
+// // // // //         {/* B. 3D PRODUCT STAGE */}
+// // // // //         <div className="relative w-full h-[600px] md:h-[800px] perspective-[2000px] my-5  flex items-center justify-center -mt-12 md:-mt-24 pointer-events-none">
+            
+// // // // //             {hasMultipleImages ? (
+// // // // //               <div className="relative w-full max-w-6xl h-full flex items-center justify-center">
+                  
+// // // // //                   {/* --- IMAGE 3: BACK LEFT (Blurry, Distant) --- */}
+// // // // //                   <ProductLayer 
+// // // // //                     src={images[3]}
+// // // // //                     y={yBack}
+// // // // //                     className="absolute top-[10%] left-[5%] md:left-[15%] w-[180px] md:w-[250px] z-0 blur-[4px] opacity-60 grayscale-[20%] rotate-[-12deg]"
+// // // // //                     floatConfig={{ duration: 7, y: [-15, 15, -15], rotate: [-12, -15, -12] }}
+// // // // //                   />
+
+// // // // //                   {/* --- IMAGE 1: BACK RIGHT (Semi-Blurry) --- */}
+// // // // //                   <ProductLayer 
+// // // // //                     src={images[1]}
+// // // // //                     y={yBack}
+// // // // //                     className="absolute top-[20%] right-[5%] md:right-[15%] w-[200px] md:w-[300px] z-10 blur-[2px] opacity-80 rotate-[12deg]"
+// // // // //                     floatConfig={{ duration: 8, delay: 1, y: [-20, 20, -20], rotate: [12, 10, 12] }}
+// // // // //                   />
+
+// // // // //                   {/* --- IMAGE 0: MAIN HERO (Center, Sharp, Glowing) --- */}
+// // // // //                   {/* Note: This is the anchor */}
+// // // // //                   <ProductLayer 
+// // // // //                     src={images[0]}
+// // // // //                     y={yMain}
+// // // // //                     className="relative z-20 w-[300px] md:w-[500px] lg:w-[550px] drop-shadow-[0_50px_100px_rgba(0,0,0,0.8)] filter brightness-110"
+// // // // //                     floatConfig={{ duration: 6, y: [-10, 10, -10] }} // Gentle bob
+// // // // //                   />
+
+// // // // //                   {/* --- IMAGE 2: FRONT LEFT (Very Sharp, Close Up, Fast Move) --- */}
+// // // // //                   <ProductLayer 
+// // // // //                     src={images[2]}
+// // // // //                     y={yFront}
+// // // // //                     className="absolute bottom-[15%] left-[10%] md:left-[20%] w-[150px] md:w-[280px] z-30 drop-shadow-2xl rotate-[-6deg]"
+// // // // //                     floatConfig={{ duration: 5, delay: 0.5, y: [0, -30, 0], rotate: [-6, -3, -6] }}
+// // // // //                   />
+
+// // // // //               </div>
+// // // // //             ) : (
+// // // // //               // Fallback for single image
+// // // // //               <ProductLayer 
+// // // // //                 src={images[0]}
+// // // // //                 y={yMain}
+// // // // //                 className="z-20 w-full max-w-md md:max-w-xl object-contain drop-shadow-[0_35px_60px_rgba(14,165,233,0.3)]"
+// // // // //                 floatConfig={{ duration: 6, y: [-15, 15, -15] }}
+// // // // //               />
+// // // // //             )}
+// // // // //         </div>
+
+// // // // //         {/* C. CTA BUTTON */}
+// // // // //         <motion.div
+// // // // //             initial={{ opacity: 0, y: 50 }}
+// // // // //             animate={{ opacity: 1, y: 0 }}
+// // // // //             transition={{ delay: 0.6, duration: 0.8 }}
+// // // // //             className="relative z-50 -mt-32 md:-mt-48"
+// // // // //         >
+// // // // //             <Link 
+// // // // //               to={content.cta_link} 
+// // // // //               className="group relative inline-flex items-center justify-center px-10 py-5 font-bold text-white transition-all duration-300 bg-brand-glow/90 rounded-2xl hover:scale-105 active:scale-95 shadow-[0_0_40px_-10px_rgba(14,165,233,0.5)] hover:shadow-[0_0_60px_-10px_rgba(14,165,233,0.8)] backdrop-blur-md"
+// // // // //             >
+// // // // //               <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+// // // // //               <span className="relative flex items-center gap-3 tracking-widest uppercase text-sm md:text-base text-dark-950 font-black">
+// // // // //                   {content.cta_text} <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+// // // // //               </span>
+// // // // //             </Link>
+// // // // //         </motion.div>
+
+// // // // //       </section>
+// // // // //     </div>
+// // // // //   );
+// // // // // };
+
+// // // // // /* -------------------------------------------------------------------------- */
+// // // // // /* SUB COMPONENTS                              */
+// // // // // /* -------------------------------------------------------------------------- */
+
+// // // // // // 1. TOP TICKER
+// // // // // // const TopTicker = () => {
+// // // // // //    return (
+// // // // // //       <div className="fixed top-0 left-0 w-full z-50 bg-black/20 backdrop-blur-md border-b border-white/5 h-10 flex items-center overflow-hidden">
+// // // // // //          <motion.div 
+// // // // // //             className="flex items-center gap-12 whitespace-nowrap min-w-full"
+// // // // // //             animate={{ x: ["0%", "-50%"] }}
+// // // // // //             transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+// // // // // //          >
+// // // // // //             {[...Array(10)].map((_, i) => (
+// // // // // //                <React.Fragment key={i}>
+// // // // // //                   <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-brand-glow flex items-center gap-2">
+// // // // // //                      <Zap size={12} className="fill-brand-glow" /> 
+// // // // // //                      Potency Redefined
+// // // // // //                   </span>
+// // // // // //                   <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-white/50 flex items-center gap-2">
+// // // // // //                      <Star size={12} /> 
+// // // // // //                      Lab Tested & Verified
+// // // // // //                   </span>
+// // // // // //                </React.Fragment>
+// // // // // //             ))}
+// // // // // //          </motion.div>
+// // // // // //       </div>
+// // // // // //    );
+// // // // // // };
+
+// // // // // // 2. PRODUCT LAYER (Handles Parallax + Idle Float)
+// // // // // const ProductLayer = ({ src, className, floatConfig, y }) => {
+// // // // //   if (!src) return null; 
+
+// // // // //   return (
+// // // // //     <motion.div
+// // // // //       style={{ y }} // Scroll Parallax
+// // // // //       className={`absolute ${className}`} 
+// // // // //       initial={{ opacity: 0, scale: 0.8 }}
+// // // // //       animate={{ opacity: className.includes('opacity') ? undefined : 1, scale: 1 }}
+// // // // //       transition={{ duration: 1.5, ease: "easeOut" }}
+// // // // //     >
+// // // // //        {/* Idle Floating Animation nested inside */}
+// // // // //        <motion.img 
+// // // // //          src={src} 
+// // // // //          alt="Cloud7 Product" 
+// // // // //          className="w-full h-auto object-contain"
+// // // // //          animate={{ 
+// // // // //             y: floatConfig?.y || [0, -10, 0],
+// // // // //             rotate: floatConfig?.rotate || [0, 0, 0]
+// // // // //          }}
+// // // // //          transition={{ 
+// // // // //             duration: floatConfig?.duration || 5, 
+// // // // //             delay: floatConfig?.delay || 0,
+// // // // //             repeat: Infinity, 
+// // // // //             ease: "easeInOut" 
+// // // // //          }}
+// // // // //        />
+// // // // //     </motion.div>
+// // // // //   );
+// // // // // };
+
+// // // // // // 3. AURORA BACKGROUND (Colorful & Beautiful)
+// // // // // const AuroraBackground = ({ baseColor }) => {
+// // // // //   const color1 = baseColor || '#0ea5e9'; // Brand Glow (Cyan)
+// // // // //   const color2 = '#7c3aed'; // Deep Purple
+// // // // //   const color3 = '#1d4ed8'; // Royal Blue
+
+// // // // //   return (
+// // // // //     <div className="absolute inset-0 overflow-hidden bg-dark-950">
+       
+// // // // //        {/* Blob 1: Top Left (Brand Color) */}
+// // // // //        <motion.div 
+// // // // //          className="absolute top-[-10%] left-[-10%] w-[80vw] h-[80vw] rounded-full blur-[120px] opacity-30 mix-blend-screen"
+// // // // //          style={{ backgroundColor: color1 }}
+// // // // //          animate={{ 
+// // // // //             scale: [1, 1.2, 1],
+// // // // //             rotate: [0, 45, 0],
+// // // // //             x: [0, 50, 0]
+// // // // //          }}
+// // // // //          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+// // // // //        />
+
+// // // // //        {/* Blob 2: Bottom Right (Purple) */}
+// // // // //        <motion.div 
+// // // // //          className="absolute bottom-[-10%] right-[-10%] w-[70vw] h-[70vw] rounded-full blur-[100px] opacity-25 mix-blend-screen"
+// // // // //          style={{ backgroundColor: color2 }}
+// // // // //          animate={{ 
+// // // // //             scale: [1, 1.3, 1],
+// // // // //             x: [0, -60, 0],
+// // // // //             y: [0, 30, 0]
+// // // // //          }}
+// // // // //          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+// // // // //        />
+
+// // // // //        {/* Blob 3: Center/Moving (Blue) */}
+// // // // //        <motion.div 
+// // // // //          className="absolute top-[40%] left-[30%] w-[50vw] h-[50vw] rounded-full blur-[140px] opacity-20 mix-blend-screen"
+// // // // //          style={{ backgroundColor: color3 }}
+// // // // //          animate={{ 
+// // // // //             x: [-40, 40, -40],
+// // // // //             y: [-40, 40, -40],
+// // // // //             scale: [1, 1.1, 1]
+// // // // //          }}
+// // // // //          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+// // // // //        />
+
+// // // // //        {/* Radial Gradient Overlay (Vignette) */}
+// // // // //        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020617_90%)]" />
+// // // // //     </div>
+// // // // //   );
+// // // // // };
+
+// // // // // export default Hero;
+// // // // import React, { useEffect, useState, useRef } from 'react';
+// // // // import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+// // // // import { ArrowRight, ChevronRight, Play } from 'lucide-react';
+// // // // import { Link } from 'react-router-dom';
+// // // // import { heroApi } from '../../api/heroApi';
+
+// // // // // --- CONFIG ---
+// // // // const AUTO_ROTATE_MS = 5000;
+
+// // // // const Hero = () => {
+// // // //   const [data, setData] = useState(null);
+// // // //   const [activeImgIndex, setActiveImgIndex] = useState(0);
+// // // //   const [isHovering, setIsHovering] = useState(false);
+// // // //   const [imagesLoaded, setImagesLoaded] = useState(false);
+  
+// // // //   // Parallax Physics
+// // // //   const { scrollY } = useScroll();
+// // // //   const yContent = useTransform(scrollY, [0, 500], [0, 100]);
+// // // //   const opacityFade = useTransform(scrollY, [0, 400], [1, 0]);
+// // // //   const scaleImage = useTransform(scrollY, [0, 500], [1, 1.1]);
+
+// // // //   useEffect(() => {
+// // // //     const loadHero = async () => {
+// // // //       try {
+// // // //         const result = await heroApi.getActiveHero();
+// // // //         if (result) setData(result);
+// // // //       } catch (err) {
+// // // //         console.error("Hero Error:", err);
+// // // //       }
+// // // //     };
+// // // //     loadHero();
+// // // //   }, []);
+
+// // // //   // Auto-Rotate Logic (stops on hover)
+// // // //   useEffect(() => {
+// // // //     if (!data?.hero_images || data.hero_images.length <= 1 || isHovering) return;
+
+// // // //     const timer = setInterval(() => {
+// // // //       setActiveImgIndex((prev) => (prev + 1) % data.hero_images.length);
+// // // //     }, AUTO_ROTATE_MS);
+
+// // // //     return () => clearInterval(timer);
+// // // //   }, [data, isHovering]);
+
+// // // //   // Fallback / Loading
+// // // //   if (!data) return <div className="h-screen bg-dark-950" />;
+
+// // // //   // Determine active assets
+// // // //   // Prefer the array 'hero_images', fallback to single 'hero_image_url'
+// // // //   const gallery = (data.hero_images && data.hero_images.length > 0) 
+// // // //     ? data.hero_images 
+// // // //     : [data.hero_image_url];
+  
+// // // //   const activeImage = gallery[activeImgIndex];
+// // // //   const glowColor = data.glow_color || '#0ea5e9'; // Fallback blue
+
+// // // //   return (
+// // // //     <section 
+// // // //       className="relative w-full h-[95vh] min-h-[700px] overflow-hidden bg-dark-950 flex flex-col items-center justify-center"
+// // // //       onMouseEnter={() => setIsHovering(true)}
+// // // //       onMouseLeave={() => setIsHovering(false)}
+// // // //     >
+      
+// // // //       {/* 1. ATMOSPHERIC GLOW (Dynamic based on DB color) */}
+// // // //       <div 
+// // // //         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] rounded-full blur-[150px] opacity-20 transition-colors duration-1000 ease-in-out pointer-events-none"
+// // // //         style={{ backgroundColor: glowColor }}
+// // // //       />
+      
+// // // //       {/* 2. BACKGROUND TEXTURE (Grid + Noise) */}
+// // // //       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_100%)] pointer-events-none opacity-50" />
+// // // //       <div className="absolute inset-0 opacity-[0.04] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay pointer-events-none" />
+
+
+// // // //       {/* 3. MAIN CONTENT LAYER */}
+// // // //       <motion.div 
+// // // //         style={{ opacity: opacityFade, y: yContent }}
+// // // //         className="relative z-10 w-full max-w-7xl mx-auto px-6 h-full flex flex-col md:flex-row items-center md:justify-between"
+// // // //       >
+        
+// // // //         {/* LEFT: TEXT CONTENT */}
+// // // //         <div className="w-full md:w-5/12 text-center md:text-left order-2 md:order-1 mt-8 md:mt-0">
+          
+// // // //           {/* Subheadline (Technical Tag) */}
+// // // //           <motion.div 
+// // // //             initial={{ opacity: 0, x: -20 }}
+// // // //             animate={{ opacity: 1, x: 0 }}
+// // // //             transition={{ delay: 0.2 }}
+// // // //             className="flex items-center justify-center md:justify-start gap-3 mb-6"
+// // // //           >
+// // // //             <span className="w-8 h-[1px] bg-brand-glow/50" />
+// // // //             <span className="text-brand-glow text-xs font-mono tracking-[0.3em] uppercase">
+// // // //               {data.subheadline}
+// // // //             </span>
+// // // //           </motion.div>
+
+// // // //           {/* Headline (Big Impact) */}
+// // // //           <motion.h1 
+// // // //             initial={{ opacity: 0, y: 20 }}
+// // // //             animate={{ opacity: 1, y: 0 }}
+// // // //             transition={{ delay: 0.3, duration: 0.8 }}
+// // // //             className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-8"
+// // // //           >
+// // // //             {data.headline.split(' ').map((word, i) => (
+// // // //               <span key={i} className="block">{word}</span>
+// // // //             ))}
+// // // //           </motion.h1>
+
+// // // //           {/* CTA Button */}
+// // // //           <motion.div
+// // // //             initial={{ opacity: 0 }}
+// // // //             animate={{ opacity: 1 }}
+// // // //             transition={{ delay: 0.5 }}
+// // // //           >
+// // // //             <Link to={data.cta_link} className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-dark-950 font-bold uppercase tracking-wider text-sm overflow-hidden rounded-full hover:scale-105 transition-transform duration-300">
+// // // //               <span className="relative z-10">{data.cta_text}</span>
+// // // //               <ArrowRight size={16} className="relative z-10 group-hover:translate-x-1 transition-transform" />
+// // // //               {/* Button Hover Glow */}
+// // // //               <div 
+// // // //                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+// // // //                 style={{ backgroundColor: glowColor, mixBlendMode: 'color' }}
+// // // //               />
+// // // //             </Link>
+// // // //           </motion.div>
+// // // //         </div>
+
+
+// // // //         {/* RIGHT: IMAGE GALLERY STAGE */}
+// // // //         <div className="w-full md:w-7/12 h-[50vh] md:h-[70vh] relative order-1 md:order-2 flex items-center justify-center perspective-1000">
+          
+// // // //           {/* Active Image Render */}
+// // // //           <AnimatePresence mode="wait">
+// // // //              <motion.img
+// // // //                 key={activeImgIndex} // Key change triggers animation
+// // // //                 src={activeImage}
+// // // //                 alt="Hero Product"
+// // // //                 initial={{ opacity: 0, scale: 0.9, rotateY: 10, filter: 'blur(10px)' }}
+// // // //                 animate={{ opacity: 1, scale: 1, rotateY: 0, filter: 'blur(0px)' }}
+// // // //                 exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+// // // //                 transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
+// // // //                 style={{ scale: scaleImage }}
+// // // //                 className="relative z-20 max-h-full w-auto object-contain drop-shadow-2xl"
+// // // //              />
+// // // //           </AnimatePresence>
+
+// // // //           {/* Image Navigation Dots / Thumbnails (Desktop Only) */}
+// // // //           {gallery.length > 1 && (
+// // // //              <div className="absolute bottom-0 right-0 md:right-12 z-30 flex items-center gap-4 bg-black/20 backdrop-blur-md p-2 rounded-full border border-white/5">
+// // // //                 {gallery.map((img, idx) => (
+// // // //                   <button
+// // // //                     key={idx}
+// // // //                     onClick={() => setActiveImgIndex(idx)}
+// // // //                     className={`relative w-12 h-12 rounded-full overflow-hidden border transition-all duration-300 ${
+// // // //                         idx === activeImgIndex 
+// // // //                         ? 'border-brand-glow scale-110 opacity-100' 
+// // // //                         : 'border-transparent opacity-50 hover:opacity-100'
+// // // //                     }`}
+// // // //                   >
+// // // //                      <img src={img} className="w-full h-full object-cover" alt="thumb" />
+// // // //                   </button>
+// // // //                 ))}
+// // // //              </div>
+// // // //           )}
+
+// // // //         </div>
+
+// // // //       </motion.div>
+
+
+// // // //       {/* 4. BOTTOM GRADIENT (Seamless Blend) */}
+// // // //       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-dark-950 to-transparent z-[2]" />
+      
+// // // //     </section>
+// // // //   );
+// // // // };
+
+// // // // export default Hero;
+// // // import React, { useEffect, useState } from 'react';
+// // // import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+// // // import { ArrowRight } from 'lucide-react';
+// // // import { Link } from 'react-router-dom';
+// // // import { heroApi } from '../../api/heroApi';
+
+// // // // --- CONFIG ---
+// // // const AUTO_ROTATE_MS = 5000;
+
+// // // const Hero = () => {
+// // //   const [data, setData] = useState(null);
+// // //   const [activeImgIndex, setActiveImgIndex] = useState(0);
+// // //   const [isHovering, setIsHovering] = useState(false);
+  
+// // //   // --- FIXED PARALLAX PHYSICS ---
+// // //   const { scrollY } = useScroll();
+  
+// // //   // 1. Content moves down slightly (Parallax)
+// // //   const yContent = useTransform(scrollY, [0, 1000], [0, 200]);
+  
+// // //   // 2. FIXED: Opacity now fades much later (starts at 500px, ends at 900px)
+// // //   // This ensures it stays visible until the next section actually covers it.
+// // //   const opacityFade = useTransform(scrollY, [0, 500, 900], [1, 1, 0]);
+  
+// // //   // 3. Image scales up slightly
+// // //   const scaleImage = useTransform(scrollY, [0, 1000], [1, 1.1]);
+
+// // //   useEffect(() => {
+// // //     const loadHero = async () => {
+// // //       try {
+// // //         const result = await heroApi.getActiveHero();
+// // //         if (result) setData(result);
+// // //       } catch (err) {
+// // //         console.error("Hero Error:", err);
+// // //       }
+// // //     };
+// // //     loadHero();
+// // //   }, []);
+
+// // //   // Auto-Rotate Logic
+// // //   useEffect(() => {
+// // //     if (!data?.hero_images || data.hero_images.length <= 1 || isHovering) return;
+
+// // //     const timer = setInterval(() => {
+// // //       setActiveImgIndex((prev) => (prev + 1) % data.hero_images.length);
+// // //     }, AUTO_ROTATE_MS);
+
+// // //     return () => clearInterval(timer);
+// // //   }, [data, isHovering]);
+
+// // //   if (!data) return <div className="h-screen bg-dark-950" />;
+
+// // //   const gallery = (data.hero_images && data.hero_images.length > 0) 
+// // //     ? data.hero_images 
+// // //     : [data.hero_image_url];
+  
+// // //   const activeImage = gallery[activeImgIndex];
+// // //   const glowColor = data.glow_color || '#0ea5e9'; 
+
+// // //   return (
+// // //     <section 
+// // //       className="relative w-full h-[95vh] min-h-[700px] overflow-hidden bg-dark-950 flex flex-col items-center justify-center"
+// // //       onMouseEnter={() => setIsHovering(true)}
+// // //       onMouseLeave={() => setIsHovering(false)}
+// // //     >
+      
+// // //       {/* 1. ATMOSPHERIC GLOW (Fixed Background - No Parallax on this to keep it stable) */}
+// // //       <div 
+// // //         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] rounded-full blur-[150px] opacity-20 transition-colors duration-1000 ease-in-out pointer-events-none"
+// // //         style={{ backgroundColor: glowColor }}
+// // //       />
+      
+// // //       {/* 2. BACKGROUND TEXTURE */}
+// // //       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_100%)] pointer-events-none opacity-50" />
+// // //       <div className="absolute inset-0 opacity-[0.04] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay pointer-events-none" />
+
+// // //       {/* 3. MAIN CONTENT LAYER (With Fixed Parallax) */}
+// // //       <motion.div 
+// // //         style={{ opacity: opacityFade, y: yContent }}
+// // //         className="relative z-10 w-full max-w-7xl mx-auto px-6 h-full flex flex-col md:flex-row items-center md:justify-between"
+// // //       >
+        
+// // //         {/* LEFT: TEXT CONTENT */}
+// // //         <div className="w-full md:w-5/12 text-center md:text-left order-2 md:order-1 mt-8 md:mt-0 relative z-20">
+          
+// // //           {/* Subheadline */}
+// // //           <motion.div 
+// // //             initial={{ opacity: 0, x: -20 }}
+// // //             animate={{ opacity: 1, x: 0 }}
+// // //             transition={{ delay: 0.2 }}
+// // //             className="flex items-center justify-center md:justify-start gap-3 mb-6"
+// // //           >
+// // //             <span className="w-8 h-[1px] bg-brand-glow/50" />
+// // //             <span className="text-brand-glow text-xs font-mono tracking-[0.3em] uppercase">
+// // //               {data.subheadline}
+// // //             </span>
+// // //           </motion.div>
+
+// // //           {/* Headline */}
+// // //           <motion.h1 
+// // //             initial={{ opacity: 0, y: 20 }}
+// // //             animate={{ opacity: 1, y: 0 }}
+// // //             transition={{ delay: 0.3, duration: 0.8 }}
+// // //             className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-8"
+// // //           >
+// // //             {data.headline.split(' ').map((word, i) => (
+// // //               <span key={i} className="block">{word}</span>
+// // //             ))}
+// // //           </motion.h1>
+
+// // //           {/* CTA Button */}
+// // //           <motion.div
+// // //             initial={{ opacity: 0 }}
+// // //             animate={{ opacity: 1 }}
+// // //             transition={{ delay: 0.5 }}
+// // //           >
+// // //             <Link to={data.cta_link} className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-dark-950 font-bold uppercase tracking-wider text-sm overflow-hidden rounded-full hover:scale-105 transition-transform duration-300">
+// // //               <span className="relative z-10">{data.cta_text}</span>
+// // //               <ArrowRight size={16} className="relative z-10 group-hover:translate-x-1 transition-transform" />
+// // //               <div 
+// // //                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+// // //                 style={{ backgroundColor: glowColor, mixBlendMode: 'color' }}
+// // //               />
+// // //             </Link>
+// // //           </motion.div>
+// // //         </div>
+
+// // //         {/* RIGHT: IMAGE GALLERY STAGE */}
+// // //         <div className="w-full md:w-7/12 h-[50vh] md:h-[70vh] relative order-1 md:order-2 flex items-center justify-center perspective-1000">
+          
+// // //           <AnimatePresence mode="wait">
+// // //              <motion.img
+// // //                 key={activeImgIndex} 
+// // //                 src={activeImage}
+// // //                 alt="Hero Product"
+// // //                 initial={{ opacity: 0, scale: 0.9, rotateY: 10, filter: 'blur(10px)' }}
+// // //                 animate={{ opacity: 1, scale: 1, rotateY: 0, filter: 'blur(0px)' }}
+// // //                 exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+// // //                 transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
+// // //                 style={{ scale: scaleImage }}
+// // //                 className="relative z-20 max-h-full w-auto object-contain drop-shadow-2xl"
+// // //              />
+// // //           </AnimatePresence>
+
+// // //           {/* Thumbnails */}
+// // //           {gallery.length > 1 && (
+// // //              <div className="absolute bottom-0 right-0 md:right-12 z-30 flex items-center gap-4 bg-black/20 backdrop-blur-md p-2 rounded-full border border-white/5">
+// // //                 {gallery.map((img, idx) => (
+// // //                   <button
+// // //                     key={idx}
+// // //                     onClick={() => setActiveImgIndex(idx)}
+// // //                     className={`relative w-12 h-12 rounded-full overflow-hidden border transition-all duration-300 ${
+// // //                         idx === activeImgIndex 
+// // //                         ? 'border-brand-glow scale-110 opacity-100' 
+// // //                         : 'border-transparent opacity-50 hover:opacity-100'
+// // //                     }`}
+// // //                   >
+// // //                      <img src={img} className="w-full h-full object-cover" alt="thumb" />
+// // //                   </button>
+// // //                 ))}
+// // //              </div>
+// // //           )}
+
+// // //         </div>
+
+// // //       </motion.div>
+
+// // //       {/* 4. BOTTOM GRADIENT */}
+// // //       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-dark-950 to-transparent z-[2]" />
+      
+// // //     </section>
+// // //   );
+// // // };
+
+// // // export default Hero;
+// // // import React, { useEffect, useState } from 'react';
+// // // import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+// // // import { ArrowRight, ChevronRight, ChevronLeft, Minus } from 'lucide-react';
+// // // import { Link } from 'react-router-dom';
+// // // import { heroApi } from '../../api/heroApi';
+
+// // // // --- CONFIGURATION ---
+// // // const AUTO_ROTATE_MS = 6000;
+
+// // // const Hero = () => {
+// // //   const [data, setData] = useState(null);
+// // //   const [activeImgIndex, setActiveImgIndex] = useState(0);
+// // //   const [isHovering, setIsHovering] = useState(false);
+
+// // //   // --- PARALLAX (Movement Only, No Opacity Fade) ---
+// // //   const { scrollY } = useScroll();
+  
+// // //   // The background moves slightly slower than scroll (Depth)
+// // //   const yBackground = useTransform(scrollY, [0, 1000], [0, 150]);
+  
+// // //   // The text moves slightly faster (Parallax foreground)
+// // //   const yText = useTransform(scrollY, [0, 1000], [0, -50]);
+
+// // //   useEffect(() => {
+// // //     const loadHero = async () => {
+// // //       try {
+// // //         const result = await heroApi.getActiveHero();
+// // //         if (result) setData(result);
+// // //       } catch (err) {
+// // //         console.error("Hero Error:", err);
+// // //       }
+// // //     };
+// // //     loadHero();
+// // //   }, []);
+
+// // //   // Auto-Rotate Logic
+// // //   useEffect(() => {
+// // //     if (!data?.hero_images || data.hero_images.length <= 1 || isHovering) return;
+// // //     const timer = setInterval(() => {
+// // //       handleNext();
+// // //     }, AUTO_ROTATE_MS);
+// // //     return () => clearInterval(timer);
+// // //   }, [data, isHovering, activeImgIndex]);
+
+// // //   const handleNext = () => {
+// // //     if (!data) return;
+// // //     const gallery = data.hero_images || [data.hero_image_url];
+// // //     setActiveImgIndex((prev) => (prev + 1) % gallery.length);
+// // //   };
+
+// // //   const handlePrev = () => {
+// // //     if (!data) return;
+// // //     const gallery = data.hero_images || [data.hero_image_url];
+// // //     setActiveImgIndex((prev) => (prev === 0 ? gallery.length - 1 : prev - 1));
+// // //   };
+
+// // //   if (!data) return <div className="h-screen bg-dark-950" />;
+
+// // //   const gallery = (data.hero_images && data.hero_images.length > 0) 
+// // //     ? data.hero_images 
+// // //     : [data.hero_image_url];
+  
+// // //   const activeImage = gallery[activeImgIndex];
+// // //   const glowColor = data.glow_color || '#0ea5e9';
+
+// // //   return (
+// // //     <section 
+// // //       className="relative w-full min-h-screen overflow-hidden bg-dark-950 flex flex-col justify-center"
+// // //       onMouseEnter={() => setIsHovering(true)}
+// // //       onMouseLeave={() => setIsHovering(false)}
+// // //     >
+      
+// // //       {/* 1. BACKGROUND LAYER (Parallax) */}
+// // //       <motion.div 
+// // //         style={{ y: yBackground }}
+// // //         className="absolute inset-0 w-full h-[120%] -top-[10%] pointer-events-none"
+// // //       >
+// // //         {/* Technical Grid Pattern */}
+// // //         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+        
+// // //         {/* Volumetric Top Light (Based on Glow Color) */}
+// // //         <div 
+// // //            className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[500px] bg-gradient-to-b from-current to-transparent opacity-10 blur-3xl"
+// // //            style={{ color: glowColor }}
+// // //         />
+        
+// // //         {/* Noise Texture */}
+// // //         <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
+// // //       </motion.div>
+
+
+// // //       {/* 2. MAIN CONTAINER */}
+// // //       <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full pt-20 pb-20">
+
+// // //         {/* --- LEFT COL: TYPOGRAPHY (5 Cols) --- */}
+// // //         <motion.div 
+// // //           style={{ y: yText }}
+// // //           className="lg:col-span-5 flex flex-col justify-center order-2 lg:order-1 relative"
+// // //         >
+// // //           {/* Decorative Tag */}
+// // //           <div className="flex items-center gap-3 mb-8">
+// // //              <span className="flex h-2 w-2 relative">
+// // //                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: glowColor }}></span>
+// // //                 <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: glowColor }}></span>
+// // //              </span>
+// // //              <span className="text-xs font-mono text-slate-400 tracking-[0.3em] uppercase">
+// // //                 Series 01 / Available Now
+// // //              </span>
+// // //           </div>
+
+// // //           {/* Headline */}
+// // //           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-8">
+// // //             {data.headline}
+// // //           </h1>
+
+// // //           {/* Subheadline with side line */}
+// // //           <div className="flex gap-6 mb-10 pl-2">
+// // //             <div className="w-[2px] h-auto bg-gradient-to-b from-white/50 to-transparent" />
+// // //             <p className="text-lg text-slate-300 font-light leading-relaxed max-w-md">
+// // //               {data.subheadline}
+// // //             </p>
+// // //           </div>
+
+// // //           {/* CTA Group */}
+// // //           <div className="flex items-center gap-6">
+// // //             <Link to={data.cta_link} className="group relative px-8 py-4 bg-white text-dark-950 font-bold uppercase tracking-widest text-xs overflow-hidden">
+// // //                <span className="relative z-10 flex items-center gap-2">
+// // //                  {data.cta_text} <ArrowRight size={14} />
+// // //                </span>
+// // //                <div className="absolute inset-0 bg-brand-glow transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out" />
+// // //             </Link>
+            
+// // //             {/* Gallery Controls (Desktop) */}
+// // //             <div className="hidden md:flex items-center gap-4 ml-4">
+// // //                <button onClick={handlePrev} className="p-3 rounded-full border border-white/10 text-white/50 hover:text-white hover:border-white transition-all">
+// // //                   <ChevronLeft size={20} />
+// // //                </button>
+// // //                <span className="text-xs font-mono text-white/50">
+// // //                   {String(activeImgIndex + 1).padStart(2, '0')} <span className="mx-1">/</span> {String(gallery.length).padStart(2, '0')}
+// // //                </span>
+// // //                <button onClick={handleNext} className="p-3 rounded-full border border-white/10 text-white/50 hover:text-white hover:border-white transition-all">
+// // //                   <ChevronRight size={20} />
+// // //                </button>
+// // //             </div>
+// // //           </div>
+// // //         </motion.div>
+
+
+// // //         {/* --- RIGHT COL: PRODUCT STAGE (7 Cols) --- */}
+// // //         <div className="lg:col-span-7 h-[50vh] lg:h-[80vh] relative flex items-center justify-center order-1 lg:order-2 perspective-1000">
+           
+// // //            {/* Glow behind product */}
+// // //            <div 
+// // //              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] lg:w-[500px] lg:h-[500px] rounded-full blur-[100px] opacity-20 transition-colors duration-700"
+// // //              style={{ backgroundColor: glowColor }}
+// // //            />
+
+// // //            <AnimatePresence mode="wait">
+// // //              <motion.div
+// // //                key={activeImgIndex}
+// // //                initial={{ opacity: 0, x: 50, scale: 0.95 }}
+// // //                animate={{ opacity: 1, x: 0, scale: 1 }}
+// // //                exit={{ opacity: 0, x: -50, scale: 1.05 }}
+// // //                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+// // //                className="relative z-20 w-full h-full flex items-center justify-center"
+// // //              >
+// // //                 <img 
+// // //                   src={activeImage} 
+// // //                   alt="Hero Product"
+// // //                   className="max-h-full max-w-full object-contain drop-shadow-2xl"
+// // //                 />
+// // //              </motion.div>
+// // //            </AnimatePresence>
+
+// // //            {/* Mobile Only Controls */}
+// // //            <div className="absolute bottom-0 w-full flex justify-center gap-2 md:hidden">
+// // //               {gallery.map((_, idx) => (
+// // //                 <div 
+// // //                   key={idx} 
+// // //                   className={`h-1 rounded-full transition-all duration-300 ${idx === activeImgIndex ? 'w-8 bg-white' : 'w-2 bg-white/20'}`}
+// // //                 />
+// // //               ))}
+// // //            </div>
+// // //         </div>
+
+// // //       </div>
+
+// // //       {/* 3. SCROLL INDICATOR (Anchored Bottom Right) */}
+// // //       <div className="absolute bottom-10 right-10 hidden md:flex flex-col items-center gap-4 z-20">
+// // //          <div className="h-16 w-[1px] bg-gradient-to-b from-transparent to-white/30" />
+// // //          <span className="writing-vertical-lr text-[10px] text-white/30 uppercase tracking-widest rotate-180">
+// // //             Scroll to Explore
+// // //          </span>
+// // //       </div>
+
+// // //       {/* 4. SEAMLESS BLEND TO NEXT SECTION */}
+// // //       <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-dark-950 to-transparent z-20" />
+
+// // //     </section>
+// // //   );
+// // // };
+
+// // // export default Hero;
+// // import React, { useEffect, useState } from 'react';
+// // import { motion, AnimatePresence } from 'framer-motion';
+// // import { ArrowRight } from 'lucide-react';
+// // import { Link } from 'react-router-dom';
+// // import { heroApi } from '../../api/heroApi';
+
+// // // --- CONFIGURATION ---
+// // const AUTO_ROTATE_MS = 6000;
+
+// // const Hero = () => {
+// //   const [data, setData] = useState(null);
+// //   const [activeImgIndex, setActiveImgIndex] = useState(0);
+
+// //   // Load Data
+// //   useEffect(() => {
+// //     const loadHero = async () => {
+// //       try {
+// //         const result = await heroApi.getActiveHero();
+// //         if (result) setData(result);
+// //       } catch (err) {
+// //         console.error("Hero Error:", err);
+// //       }
+// //     };
+// //     loadHero();
+// //   }, []);
+
+// //   // Auto-Rotate Logic with Reset
+// //   useEffect(() => {
+// //     if (!data?.hero_images || data.hero_images.length <= 1) return;
+
+// //     const timer = setInterval(() => {
+// //       setActiveImgIndex((prev) => 
+// //         (prev + 1) % (data.hero_images || [data.hero_image_url]).length
+// //       );
+// //     }, AUTO_ROTATE_MS);
+
+// //     return () => clearInterval(timer);
+// //   }, [data, activeImgIndex]);
+
+// //   if (!data) return <div className="h-screen bg-zinc-950" />;
+
+// //   const gallery = (data.hero_images && data.hero_images.length > 0) 
+// //     ? data.hero_images 
+// //     : [data.hero_image_url];
+  
+// //   const activeImage = gallery[activeImgIndex];
+// //   const glowColor = data.glow_color || '#ffffff';
+
+// //   return (
+// //     <section className="relative w-full h-screen overflow-hidden bg-zinc-950 text-white flex items-center justify-center">
+      
+// //       {/* 1. AMBIENT BACKGROUND */}
+// //       <div className="absolute inset-0 pointer-events-none">
+// //         {/* Subtle Gradient Spot */}
+// //         <motion.div 
+// //           animate={{ opacity: [0.3, 0.5, 0.3], scale: [1, 1.2, 1] }}
+// //           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+// //           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] rounded-full blur-[120px] opacity-20"
+// //           style={{ backgroundColor: glowColor }}
+// //         />
+// //         {/* Grain Overlay */}
+// //         <div className="absolute inset-0 opacity-[0.04] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+// //       </div>
+
+// //       <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center h-full">
+
+// //         {/* --- LEFT: MINIMAL TEXT --- */}
+// //         <div className="flex flex-col justify-center items-start space-y-8 pl-4 lg:pl-12">
+          
+// //           {/* Animated Text Reveal */}
+// //           <div className="overflow-hidden">
+// //             <motion.h1 
+// //               initial={{ y: 100 }}
+// //               animate={{ y: 0 }}
+// //               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+// //               className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.9]"
+// //             >
+// //               {data.headline}
+// //             </motion.h1>
+// //           </div>
+
+// //           <motion.p 
+// //             initial={{ opacity: 0 }}
+// //             animate={{ opacity: 1 }}
+// //             transition={{ delay: 0.4, duration: 1 }}
+// //             className="text-lg text-zinc-400 font-light max-w-md leading-relaxed"
+// //           >
+// //             {data.subheadline}
+// //           </motion.p>
+
+// //           {/* SHOP NOW BUTTON */}
+// //           <motion.div
+// //             initial={{ opacity: 0, y: 20 }}
+// //             animate={{ opacity: 1, y: 0 }}
+// //             transition={{ delay: 0.6 }}
+// //           >
+// //             <Link 
+// //               to={data.cta_link || "/shop"} 
+// //               className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-black rounded-full overflow-hidden transition-all hover:pr-14"
+// //             >
+// //               <span className="relative z-10 font-bold tracking-wide uppercase text-sm">
+// //                 Shop Now
+// //               </span>
+              
+// //               {/* Arrow slides in on hover */}
+// //               <span className="absolute right-5 opacity-0 transform -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+// //                 <ArrowRight size={18} />
+// //               </span>
+
+// //               {/* Background fill effect */}
+// //               <div 
+// //                 className="absolute inset-0 bg-zinc-200 transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-out" 
+// //               />
+// //             </Link>
+// //           </motion.div>
+// //         </div>
+
+
+// //         {/* --- RIGHT: PRODUCT & PROGRESS --- */}
+// //         <div className="relative h-[50vh] lg:h-[70vh] flex flex-col items-center justify-center">
+           
+// //            {/* Image Container */}
+// //            <div className="relative w-full h-full flex items-center justify-center">
+// //              <AnimatePresence mode="wait">
+// //                <motion.img
+// //                  key={activeImgIndex}
+// //                  src={activeImage}
+// //                  alt="Hero Product"
+// //                  initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+// //                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+// //                  exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+// //                  transition={{ duration: 0.8, ease: "easeInOut" }}
+// //                  className="max-h-full max-w-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+// //                />
+// //              </AnimatePresence>
+// //            </div>
+
+// //            {/* Minimal Progress Indicators */}
+// //            <div className="absolute bottom-0 left-0 w-full flex items-center gap-4 px-8">
+// //              {/* Text Counter */}
+// //              <span className="text-xs font-mono text-zinc-500">
+// //                 0{activeImgIndex + 1}
+// //              </span>
+             
+// //              {/* Progress Bar Container */}
+// //              <div className="relative flex-1 h-[1px] bg-white/10 overflow-hidden">
+// //                 {/* Active Progress Line */}
+// //                 <motion.div 
+// //                   key={activeImgIndex} // Re-renders animation on index change
+// //                   initial={{ x: "-100%" }}
+// //                   animate={{ x: "0%" }}
+// //                   transition={{ duration: AUTO_ROTATE_MS / 1000, ease: "linear" }}
+// //                   className="absolute inset-0 bg-white"
+// //                 />
+// //              </div>
+
+// //              <span className="text-xs font-mono text-zinc-500">
+// //                 0{gallery.length}
+// //              </span>
+// //            </div>
+
+// //         </div>
+
+// //       </div>
+// //     </section>
+// //   );
+// // };
+
+// // export default Hero;
+// import React, { useEffect, useState } from 'react';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { ArrowRight } from 'lucide-react';
+// import { Link } from 'react-router-dom';
+// import { heroApi } from '../../api/heroApi';
+
+// // --- CONFIGURATION ---
+// const AUTO_ROTATE_MS = 6000;
+
+// const Hero = () => {
+//   const [data, setData] = useState(null);
+//   const [activeImgIndex, setActiveImgIndex] = useState(0);
+//   const [areImagesCached, setAreImagesCached] = useState(false);
+
+//   // 1. Load Data
+//   useEffect(() => {
+//     const loadHero = async () => {
+//       try {
+//         const result = await heroApi.getActiveHero();
+//         if (result) {
+//           setData(result);
+//           // Trigger preloading immediately after data is received
+//           preloadImages(result.hero_images || [result.hero_image_url]);
+//         }
+//       } catch (err) {
+//         console.error("Hero Error:", err);
+//       }
+//     };
+//     loadHero();
+//   }, []);
+
+//   // 2. System Cache Preloader
+//   // This downloads all images to browser cache so subsequent slides exist instantly
+//   const preloadImages = async (urls) => {
+//     const promises = urls.map((src) => {
+//       return new Promise((resolve, reject) => {
+//         const img = new Image();
+//         img.src = src;
+//         img.onload = resolve;
+//         img.onerror = resolve; // Resolve anyway to prevent blocking
+//       });
+//     });
+
+//     await Promise.all(promises);
+//     setAreImagesCached(true); // All images are now in system cache
+//   };
+
+//   // 3. Auto-Rotate Logic
+//   useEffect(() => {
+//     if (!data?.hero_images || data.hero_images.length <= 1) return;
+
+//     const timer = setInterval(() => {
+//       setActiveImgIndex((prev) => 
+//         (prev + 1) % (data.hero_images || [data.hero_image_url]).length
+//       );
+//     }, AUTO_ROTATE_MS);
+
+//     return () => clearInterval(timer);
+//   }, [data, activeImgIndex]);
+
+//   // Initial Loading State (Before API returns)
+//   if (!data) return <div className="h-screen bg-black flex items-center justify-center text-zinc-600">Loading...</div>;
+
+//   const gallery = (data.hero_images && data.hero_images.length > 0) 
+//     ? data.hero_images 
+//     : [data.hero_image_url];
+  
+//   const activeImage = gallery[activeImgIndex];
+//   const glowColor = data.glow_color || '#ffffff';
+
+//   return (
+//     <section className="relative w-full h-screen overflow-hidden bg-black text-white flex items-center justify-center">
+      
+//       {/* 1. AMBIENT BACKGROUND */}
+//       <div className="absolute inset-0 pointer-events-none">
+//         <motion.div 
+//           animate={{ opacity: [0.3, 0.5, 0.3], scale: [1, 1.2, 1] }}
+//           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+//           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] rounded-full blur-[120px] opacity-20"
+//           style={{ backgroundColor: glowColor }}
+//         />
+//         <div className="absolute inset-0 opacity-[0.04] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+//       </div>
+
+//       <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center h-full">
+
+//         {/* --- LEFT: TEXT CONTENT --- */}
+//         <div className="flex flex-col justify-center items-start space-y-8 pl-4 lg:pl-12 order-2 lg:order-1">
+//           <div className="overflow-hidden">
+//             <motion.h1 
+//               initial={{ y: 100 }}
+//               animate={{ y: 0 }}
+//               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+//               className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.9]"
+//             >
+//               {data.headline}
+//             </motion.h1>
+//           </div>
+
+//           <motion.p 
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             transition={{ delay: 0.4, duration: 1 }}
+//             className="text-lg text-zinc-400 font-light max-w-md leading-relaxed"
+//           >
+//             {data.subheadline}
+//           </motion.p>
+
+//           <motion.div
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ delay: 0.6 }}
+//           >
+//             <Link 
+//               to={data.cta_link || "/shop"} 
+//               className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-black rounded-full overflow-hidden transition-all hover:pr-14"
+//             >
+//               <span className="relative z-10 font-bold tracking-wide uppercase text-sm">
+//                 Shop Now
+//               </span>
+//               <span className="absolute right-5 opacity-0 transform -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+//                 <ArrowRight size={18} />
+//               </span>
+//               <div className="absolute inset-0 bg-zinc-200 transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-out" />
+//             </Link>
+//           </motion.div>
+//         </div>
+
+//         {/* --- RIGHT: PRODUCT IMAGE --- */}
+//         <div className="relative h-[50vh] lg:h-[70vh] flex flex-col items-center justify-center order-1 lg:order-2">
+//            <div className="relative w-full h-full flex items-center justify-center">
+             
+//              {/* If images aren't cached yet, show loading. If cached, show image transition */}
+//              {!areImagesCached ? (
+//                 <div className="animate-pulse text-zinc-600 text-sm tracking-widest uppercase font-mono">
+//                   Loading Experience...
+//                 </div>
+//              ) : (
+//                <AnimatePresence mode="wait">
+//                  <motion.img
+//                    key={activeImgIndex}
+//                    src={activeImage}
+//                    alt="Hero Product"
+//                    // Animation only plays after image is confirmed loaded from cache
+//                    initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+//                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+//                    exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+//                    transition={{ duration: 0.8, ease: "easeInOut" }}
+//                    className="max-h-full max-w-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+//                  />
+//                </AnimatePresence>
+//              )}
+
+//            </div>
+//         </div>
+
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default Hero;
+// // // // src/components/home/LabPreview.jsx
+// // // import React, { useEffect, useState } from 'react';
+// // // import { motion } from 'framer-motion';
+// // // import { ShieldCheck, Microscope, ArrowRight, FileText, CheckCircle2 } from 'lucide-react';
+// // // import { Link } from 'react-router-dom';
+// // // import { homeContentApi } from '../../api/homeContentApi';
+
+// // // const LabPreview = () => {
+// // //   const [batches, setBatches] = useState([]);
+
+// // //   useEffect(() => {
+// // //     const load = async () => {
+// // //       try {
+// // //         const data = await homeContentApi.getLatestLabResults();
+// // //         setBatches(data);
+// // //       } catch (e) {
+// // //         console.error(e);
+// // //       }
+// // //     };
+// // //     load();
+// // //   }, []);
+
+// // //   return (
+// // //     <div className="relative w-full bg-dark-900 border-y border-white/5 overflow-hidden">
+// // //       <div className="max-w-7xl mx-auto px-4 py-24 grid lg:grid-cols-2 gap-16 items-center">
+        
+// // //         {/* LEFT: Text Content */}
+// // //         <div className="space-y-8 relative z-10">
+// // //           <motion.div 
+// // //             initial={{ opacity: 0, x: -20 }}
+// // //             whileInView={{ opacity: 1, x: 0 }}
+// // //             viewport={{ once: true }}
+// // //             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-glow/10 border border-brand-glow/20 text-brand-glow text-xs font-bold uppercase tracking-widest"
+// // //           >
+// // //             <ShieldCheck size={14} /> 100% Verified Potency
+// // //           </motion.div>
+          
+// // //           <h2 className="text-4xl md:text-5xl font-black text-white leading-tight">
+// // //             Total Transparency. <br />
+// // //             <span className="text-slate-500">Down to the molecule.</span>
+// // //           </h2>
+          
+// // //           <p className="text-lg text-slate-400 leading-relaxed max-w-lg">
+// // //             We don't guess. Every single batch sent to your door has been third-party tested for purity, heavy metals, and potency. Scan your bottle to see the proof.
+// // //           </p>
+
+// // //           <Link 
+// // //             to="/science" 
+// // //             className="group inline-flex items-center gap-3 text-white font-bold text-lg border-b border-brand-glow pb-1 hover:text-brand-glow transition-colors"
+// // //           >
+// // //             View Full Lab Database <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform"/>
+// // //           </Link>
+// // //         </div>
+
+// // //         {/* RIGHT: Live Feed Visualization */}
+// // //         <div className="relative">
+// // //             {/* Decorative Glow */}
+// // //             <div className="absolute -inset-10 bg-brand-glow/20 blur-[100px] rounded-full opacity-50" />
+            
+// // //             <div className="relative bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-6 md:p-8">
+// // //                 <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+// // //                     <div className="flex items-center gap-3">
+// // //                         <Microscope className="text-brand-glow" size={24} />
+// // //                         <span className="font-bold text-white uppercase tracking-wider">Recent Analysis</span>
+// // //                     </div>
+// // //                     <div className="flex items-center gap-2">
+// // //                         <span className="relative flex h-3 w-3">
+// // //                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+// // //                           <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+// // //                         </span>
+// // //                         <span className="text-xs font-mono text-green-400">LIVE FEED</span>
+// // //                     </div>
+// // //                 </div>
+
+// // //                 <div className="space-y-4">
+// // //                     {batches.length > 0 ? batches.map((batch, i) => (
+// // //                         <motion.div 
+// // //                             key={batch.id}
+// // //                             initial={{ opacity: 0, y: 10 }}
+// // //                             whileInView={{ opacity: 1, y: 0 }}
+// // //                             transition={{ delay: i * 0.1 }}
+// // //                             className="flex items-center justify-between p-3 rounded-lg bg-dark-950/50 border border-white/5 hover:border-white/20 transition-colors group"
+// // //                         >
+// // //                             <div className="flex items-center gap-4">
+// // //                                 <div className="h-10 w-10 bg-white/10 rounded-md flex items-center justify-center">
+// // //                                     <FileText size={16} className="text-slate-400 group-hover:text-white transition-colors" />
+// // //                                 </div>
+// // //                                 <div>
+// // //                                     <h4 className="font-bold text-sm text-white">{batch.productName}</h4>
+// // //                                     <p className="text-xs text-slate-500 font-mono">BATCH: {batch.batch}</p>
+// // //                                 </div>
+// // //                             </div>
+// // //                             <div className="text-right">
+// // //                                 <div className="flex items-center gap-1 text-green-400 text-xs font-bold bg-green-400/10 px-2 py-1 rounded">
+// // //                                     <CheckCircle2 size={10} /> PASS
+// // //                                 </div>
+// // //                                 <p className="text-[10px] text-slate-600 mt-1">{new Date(batch.date).toLocaleDateString()}</p>
+// // //                             </div>
+// // //                         </motion.div>
+// // //                     )) : (
+// // //                         <p className="text-slate-500 text-sm text-center py-4">Loading verification data...</p>
+// // //                     )}
+// // //                 </div>
+
+// // //                 {/* Card Footer */}
+// // //                 <div className="mt-6 pt-4 border-t border-white/10 text-center">
+// // //                     <p className="text-xs text-slate-500 uppercase tracking-widest">
+// // //                         Certified by ISO 17025 Accredited Labs
+// // //                     </p>
+// // //                 </div>
+// // //             </div>
+// // //         </div>
+
+// // //       </div>
+// // //     </div>
+// // //   );
+// // // };
+
+// // // export default LabPreview;
+// // import React, { useEffect, useState } from 'react';
+// // import { motion } from 'framer-motion';
+// // import { ShieldCheck, ArrowRight, Check, FileText } from 'lucide-react';
+// // import { Link } from 'react-router-dom';
+// // import { homeContentApi } from '../../api/homeContentApi';
+
+// // const LabPreview = () => {
+// //   const [batches, setBatches] = useState([]);
+
+// //   useEffect(() => {
+// //     const load = async () => {
+// //       try {
+// //         const data = await homeContentApi.getLatestLabResults();
+// //         setBatches(data);
+// //       } catch (e) {
+// //         console.error(e);
+// //       }
+// //     };
+// //     load();
+// //   }, []);
+
+// //   return (
+// //     <div className="relative w-full bg-dark-900 border-y border-white/5 overflow-hidden py-24">
+// //       <div className="max-w-7xl mx-auto px-4">
+        
+// //         {/* HEADER */}
+// //         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+// //           <div className="max-w-2xl">
+// //             <div className="flex items-center gap-2 mb-4">
+// //                <span className="flex h-2 w-2 rounded-full bg-green-500"></span>
+// //                <span className="text-xs font-bold uppercase tracking-widest text-green-500">
+// //                  Third-Party Verified
+// //                </span>
+// //             </div>
+// //             <h2 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
+// //               Purity You Can <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-purple-500">Trace.</span>
+// //             </h2>
+// //             <p className="text-slate-400">
+// //               Every batch is tested for potency and safety. We believe in radical transparency.
+// //             </p>
+// //           </div>
+
+// //           <Link 
+// //             to="/science" 
+// //             className="hidden md:flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 hover:bg-white/5 hover:border-brand-glow transition-all font-bold text-sm uppercase tracking-widest text-white group"
+// //           >
+// //             View Reports <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+// //           </Link>
+// //         </div>
+
+// //         {/* VERIFICATION GRID */}
+// //         {/* Shows product images in a clean, high-end card style */}
+// //         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+// //            {batches.map((batch, i) => (
+// //              <motion.div
+// //                key={batch.id}
+// //                initial={{ opacity: 0, y: 20 }}
+// //                whileInView={{ opacity: 1, y: 0 }}
+// //                viewport={{ once: true }}
+// //                transition={{ delay: i * 0.1 }}
+// //                className="group relative bg-white/5 border border-white/5 hover:border-brand-glow/50 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-glow/10"
+// //              >
+// //                {/* "Verified" Badge */}
+// //                <div className="absolute top-3 right-3 z-10">
+// //                   <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-1.5 rounded-full backdrop-blur-md">
+// //                      <Check size={12} strokeWidth={3} />
+// //                   </div>
+// //                </div>
+
+// //                {/* Product Image */}
+// //                <div className="relative aspect-square mb-4 flex items-center justify-center bg-dark-950/30 rounded-xl overflow-hidden">
+// //                   <img 
+// //                     src={batch.image || "https://placehold.co/400x400/png"} 
+// //                     alt={batch.productName}
+// //                     className="w-3/4 h-3/4 object-contain drop-shadow-lg group-hover:scale-110 transition-transform duration-500" 
+// //                   />
+// //                </div>
+
+// //                {/* Info */}
+// //                <div className="space-y-1">
+// //                   <h4 className="font-bold text-white text-sm truncate leading-tight group-hover:text-brand-glow transition-colors">
+// //                     {batch.productName}
+// //                   </h4>
+// //                   <div className="flex flex-col gap-0.5">
+// //                     <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">
+// //                        Batch: <span className="text-slate-300">{batch.batch}</span>
+// //                     </span>
+// //                     <span className="text-[10px] text-slate-600">
+// //                        {new Date(batch.date).toLocaleDateString()}
+// //                     </span>
+// //                   </div>
+// //                </div>
+// //              </motion.div>
+// //            ))}
+
+// //            {/* View All Card (Last item) */}
+// //            {/* <Link to="/science" className="group flex flex-col items-center justify-center bg-transparent border border-dashed border-white/10 rounded-2xl hover:border-brand-glow hover:bg-brand-glow/5 transition-all p-4 text-center">
+// //               <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-brand-glow">
+// //                  <FileText size={20} />
+// //               </div>
+// //               <span className="text-xs font-bold text-white uppercase tracking-widest">View All Reports</span>
+// //            </Link> */}
+// //         </div>
+
+// //         {/* Mobile Button */}
+// //         <div className="mt-8 md:hidden text-center">
+// //            <Link to="/science" className="text-brand-glow font-bold uppercase text-sm border-b border-brand-glow/30 pb-1">
+// //              View All Reports
+// //            </Link>
+// //         </div>
+
+// //       </div>
+// //     </div>
+// //   );
+// // };
+
+// // export default LabPreview;
+// import React, { useEffect, useState } from 'react';
+// import { motion } from 'framer-motion';
+// import { 
+//   ShieldCheck, 
+//   ArrowRight, 
+//   FileText, 
+//   Microscope, 
+//   Activity, 
+//   CheckCircle2, 
+//   Download 
+// } from 'lucide-react';
+// import { Link } from 'react-router-dom';
+// import { homeContentApi } from '../../api/homeContentApi';
+
+// const LabPreview = () => {
+//   const [batches, setBatches] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const load = async () => {
+//       try {
+//         const data = await homeContentApi.getLatestLabResults();
+//         // Fallback if API returns empty during dev
+//         setBatches(data || []);
+//       } catch (e) {
+//         console.error("Failed to load lab results", e);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     load();
+//   }, []);
+
+//   // Variant for staggered animations
+//   const containerVariants = {
+//     hidden: { opacity: 0 },
+//     show: {
+//       opacity: 1,
+//       transition: {
+//         staggerChildren: 0.1
+//       }
+//     }
+//   };
+
+//   const itemVariants = {
+//     hidden: { opacity: 0, y: 20 },
+//     show: { opacity: 1, y: 0 }
+//   };
+
+//   return (
+//     <section className="relative w-full bg-[#050505] py-24 overflow-hidden">
+//       {/* Background Decor: Subtle scientific grid/glow */}
+//       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+//       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+//       <div className="max-w-7xl mx-auto px-4 relative z-10">
+//         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+          
+//           {/* LEFT SIDE: The Promise (Text Content) */}
+//           <div className="lg:col-span-4 flex flex-col justify-center h-full pt-4">
+//             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 w-fit mb-6">
+//               <span className="relative flex h-2 w-2">
+//                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+//                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+//               </span>
+//               <span className="text-[10px] font-bold uppercase tracking-widest text-green-400">
+//                 Live Lab Data
+//               </span>
+//             </div>
+
+//             <h2 className="text-4xl md:text-5xl font-black text-white leading-[0.95] mb-6 tracking-tighter">
+//               RADICAL <br />
+//               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+//                 TRANSPARENCY.
+//               </span>
+//             </h2>
+
+//             <p className="text-slate-400 leading-relaxed mb-8 text-sm md:text-base border-l-2 border-white/10 pl-4">
+//               We don't just claim purity; we prove it. Every single batch is subjected to rigorous third-party chromatography to ensure safety and potency.
+//             </p>
+
+//             {/* Testing Metrics List */}
+//             <div className="space-y-4 mb-8">
+//               <TestMetric icon={Microscope} label="Alkaloid Potency Analysis" />
+//               <TestMetric icon={ShieldCheck} label="Heavy Metals Screening" />
+//               <TestMetric icon={Activity} label="Microbial Contaminant Test" />
+//             </div>
+
+//             <Link 
+//               to="/science" 
+//               className="hidden lg:inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-black font-bold uppercase tracking-wider text-xs hover:bg-slate-200 transition-colors rounded-sm"
+//             >
+//               Access Full Library <ArrowRight size={16} />
+//             </Link>
+//           </div>
+
+//           {/* RIGHT SIDE: The Evidence (Cards Grid) */}
+//           <div className="lg:col-span-8">
+//              {loading ? (
+//                 <div className="w-full h-64 flex items-center justify-center border border-dashed border-white/10 rounded-xl">
+//                     <span className="text-slate-500 animate-pulse">Fetching batch data...</span>
+//                 </div>
+//              ) : (
+//                 <motion.div 
+//                   variants={containerVariants}
+//                   initial="hidden"
+//                   whileInView="show"
+//                   viewport={{ once: true }}
+//                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+//                 >
+//                   {batches.slice(0, 6).map((batch) => (
+//                     <BatchCard key={batch.id} batch={batch} variants={itemVariants} />
+//                   ))}
+                  
+//                   {/* "View All" Card for Mobile/Tablet context mainly, or simply filler */}
+//                   <Link to="/science" className="group flex flex-col items-center justify-center bg-white/5 border border-dashed border-white/10 hover:border-blue-400/50 hover:bg-blue-500/5 transition-all duration-300 rounded-xl min-h-[220px]">
+//                     <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+//                         <ArrowRight className="text-white group-hover:text-blue-400" />
+//                     </div>
+//                     <span className="text-xs font-bold text-white uppercase tracking-widest">View All Reports</span>
+//                   </Link>
+//                 </motion.div>
+//              )}
+//           </div>
+
+//           <div className="lg:hidden col-span-1 mt-4">
+//              <Link 
+//               to="/science" 
+//               className="w-full flex items-center justify-center gap-2 px-6 py-4 border border-white/20 text-white font-bold uppercase tracking-wider text-xs hover:bg-white/5 transition-colors rounded-sm"
+//             >
+//               Access Full Library <ArrowRight size={16} />
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// // --- Sub Components ---
+
+// const TestMetric = ({ icon: Icon, label }) => (
+//   <div className="flex items-center gap-3 group">
+//     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 text-slate-400 group-hover:text-blue-400 group-hover:bg-blue-400/10 transition-colors">
+//       <Icon size={14} />
+//     </div>
+//     <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">{label}</span>
+//   </div>
+// );
+
+// const BatchCard = ({ batch, variants }) => {
+//   return (
+//     <motion.div 
+//       variants={variants}
+//       className="group relative bg-[#0A0A0A] border border-white/10 hover:border-blue-500/30 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/10 flex flex-col"
+//     >
+//       {/* Top Status Bar */}
+//       <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+//         <div className="flex items-center gap-2">
+//             <div className="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+//             <span className="text-[10px] font-mono text-green-500 font-bold uppercase tracking-wider">PASS</span>
+//         </div>
+//         <span className="text-[10px] font-mono text-slate-500">ISO 17025</span>
+//       </div>
+
+//       <div className="p-5 flex flex-col h-full relative">
+//         {/* Subtle background icon for texture */}
+//         <FileText className="absolute top-10 right-5 text-white/[0.02] w-24 h-24 -rotate-12 pointer-events-none" />
+
+//         <div className="flex items-start gap-4 mb-4">
+//             {/* Small Thumbnail */}
+//             <div className="w-12 h-12 bg-white/5 rounded-md p-1 flex-shrink-0">
+//                 <img 
+//                     src={batch.image || "https://placehold.co/100x100"} 
+//                     alt="Product" 
+//                     className="w-full h-full object-contain"
+//                 />
+//             </div>
+//             <div>
+//                 <h4 className="text-white font-bold text-sm leading-tight line-clamp-2 mb-1 group-hover:text-blue-400 transition-colors">
+//                     {batch.productName}
+//                 </h4>
+//                 <div className="flex flex-col">
+//                     <span className="text-[10px] text-slate-500 uppercase tracking-wider">Batch ID</span>
+//                     <span className="text-xs font-mono text-slate-300">{batch.batch}</span>
+//                 </div>
+//             </div>
+//         </div>
+
+//         <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+//             <span className="text-[10px] text-slate-500">
+//                 {new Date(batch.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+//             </span>
+//             <div className="flex items-center gap-1 text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
+//                 View COA <Download size={12} />
+//             </div>
+//         </div>
+//       </div>
+//     </motion.div>
+//   );
+// };
+
+// export default LabPreview;
+// // import React, { useEffect, useState } from 'react';
+// // import { Link } from 'react-router-dom';
+// // import { motion } from 'framer-motion';
+// // import { supabase } from '../../client/supabaseClient';
+
+// // const DUMMY_IMAGE = "https://placehold.co/400x600/png"; 
+
+// // const FeaturedProducts = () => {
+// //   const [variants, setVariants] = useState([]);
+// //   const [loading, setLoading] = useState(true);
+
+// //   useEffect(() => {
+// //     const fetchVariants = async () => {
+// //       // 1. Fetch active variants
+// //       const { data: variantData, error: variantError } = await supabase
+// //         .from('product_variants')
+// //         .select(`
+// //           *,
+// //           product:products (
+// //             id,
+// //             name,
+// //             slug
+// //           ),
+// //           variant_selection_map (
+// //             option:variant_options (
+// //               name,
+// //               type:variant_types (name)
+// //             )
+// //           )
+// //         `)
+// //         .eq('is_active', true)
+// //         .order('price', { ascending: true });
+
+// //       if (!variantError && variantData) {
+// //         // 2. Process data to extract the specific "Flavor" or "Option" name
+// //         const processed = variantData.map(v => {
+// //           // Find the option that corresponds to 'Flavor' or just take the first option found
+// //           const flavorOption = v.variant_selection_map?.find(
+// //             map => map.option?.type?.name === 'Flavor'
+// //           ) || v.variant_selection_map?.[0]; // Fallback to first option
+
+// //           return {
+// //             ...v,
+// //             displayName: flavorOption ? flavorOption.option.name : formatSku(v.sku)
+// //           };
+// //         });
+// //         setVariants(processed);
+// //       }
+// //       setLoading(false);
+// //     };
+
+// //     fetchVariants();
+// //   }, []);
+
+// //   console.log(variants);
+// //   // Fallback if no specific option is found
+// //   const formatSku = (sku) => {
+// //     if (!sku) return "Unknown Flavor";
+// //     const parts = sku.split('--');
+// //     return parts.length > 1 ? parts[1].replace(/_/g, ' ') : sku;
+// //   };
+
+// //   if (loading) return null;
+
+// //   return (
+// //     <section className="relative w-full max-w-7xl mx-auto px-2 sm:px-4 z-10">
+      
+// //       <div className="text-center mb-8 md:mb-12">
+// //         <h2 className="text-2xl md:text-5xl font-black text-white uppercase tracking-tight">
+// //           Choose Your <span className="text-brand-glow">Flavor</span>
+// //         </h2>
+// //       </div>
+
+// //       {/* GRID LAYOUT: 2 columns on mobile (grid-cols-2), 4 on laptop */}
+// //       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+// //         {variants.map((variant, index) => (
+// //           <VariantCard 
+// //             key={variant.id} 
+// //             variant={variant} 
+// //             idx={index}
+// //           />
+// //         ))}
+// //       </div>
+
+// //     </section>
+// //   );
+// // };
+
+// // const VariantCard = ({ variant, idx }) => {
+// //   return (
+// //     <motion.div
+// //       initial={{ opacity: 0, y: 20 }}
+// //       whileInView={{ opacity: 1, y: 0 }}
+// //       viewport={{ once: true }}
+// //       transition={{ delay: idx * 0.05, duration: 0.4 }}
+// //       className="group relative flex flex-col h-full"
+// //     >
+// //       <div className="flex-1 bg-dark-900 border border-white/5 rounded-2xl p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:border-brand-glow/30 hover:bg-white/5 hover:-translate-y-1 hover:shadow-xl">
+        
+// //         {/* 1. TITLE (Smaller on mobile) */}
+// //         {/* <h5 className="text-xs md:text-xl font-bold text-white uppercase tracking-wider mb-1 md:mb-2 truncate w-full">
+// //           {variant?.product?.name || 'Product'}
+// //         </h5>
+
+// //         <h4 className="text-xs md:text-xl font-bold text-white uppercase tracking-wider mb-1 md:mb-2 truncate w-full">
+// //           {variant.displayName}
+// //         </h4> */}
+// //         <h5 className="text-[9px] md:text-sm font-medium text-gray-500 uppercase tracking-wide mb-0.5 truncate w-full">
+// //           {variant?.product?.name || 'Product'}
+// //         </h5>
+
+// //         {/* 2. VARIANT NAME - Small but Bold */}
+// //         <h4 className="text-[11px] md:text-lg font-black text-white uppercase tracking-tight mb-2 truncate w-full leading-tight">
+// //           {variant.displayName}
+// //         </h4>
+// //         {/* <p className="text-xs md:text-sm text-brand-glow font-mono font-medium mb-3 md:mb-6">
+// //            ${variant.price}
+// //         </p> */}
+
+// //         {/* 2. IMAGE (Optimized size) */}
+// //         <div className="relative w-full aspect-[3/4] mb-4 md:mb-8 flex items-center justify-center">
+// //            <img 
+// //             src={variant.image_url || DUMMY_IMAGE} 
+// //             alt={variant.displayName}
+// //             className="relative z-10 w-full h-full object-contain drop-shadow-lg transform transition-transform duration-500 group-hover:scale-105"
+// //             loading="lazy"
+// //            />
+// //         </div>
+
+// //         {/* 3. BUTTON (Compact on mobile) */}
+// //         <div className="w-full mt-auto">
+// //           <Link to={`/product/${variant.product?.id}?variant=${variant.id}`}>
+// //             <button className="w-full py-2 md:py-3.5 bg-dark-950 text-white font-bold text-[10px] md:text-sm uppercase tracking-widest rounded-lg md:rounded-full border border-white/10 hover:bg-brand-glow hover:text-dark-950 hover:border-brand-glow transition-all active:scale-95">
+// //               Shop
+// //             </button>
+// //           </Link>
+// //         </div>
+
+// //       </div>
+// //     </motion.div>
+// //   );
+// // };
+
+// // export default FeaturedProducts;
+// import React, { useEffect, useState } from 'react';
+// import { Link } from 'react-router-dom';
+// import { motion } from 'framer-motion';
+// import { supabase } from '../../client/supabaseClient';
+
+// const DUMMY_IMAGE = "https://placehold.co/400x600/png";
+
+// // Helper to match the screenshot colors based on product name/sku
+// const getBrandStyles = (name = "") => {
+//   const lowerName = name.toLowerCase();
+//   if (lowerName.includes('extra strength')) return { bg: 'bg-[#E31E24]', border: 'border-[#E31E24]', icon: '⚡' };
+//   if (lowerName.includes('max potency')) return { bg: 'bg-[#4A1417]', border: 'border-[#4A1417]', icon: '⚠️' };
+//   if (lowerName.includes('pseudo')) return { bg: 'bg-[#004A51]', border: 'border-[#004A51]', icon: '♾️' };
+//   return { bg: 'bg-[#009DDC]', border: 'border-[#009DDC]', icon: '①' }; // Default blue
+// };
+
+// const FeaturedProducts = () => {
+//   const [variants, setVariants] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchVariants = async () => {
+//       const { data: variantData, error: variantError } = await supabase
+//         .from('product_variants')
+//         .select(`
+//           *,
+//           product:products (id, name, slug, description),
+//           variant_selection_map (
+//             option:variant_options (
+//               name,
+//               type:variant_types (name)
+//             )
+//           )
+//         `)
+//         .eq('is_active', true)
+//         .order('price', { ascending: true });
+
+//       if (!variantError && variantData) {
+//         const processed = variantData.map(v => {
+//           const flavorOption = v.variant_selection_map?.find(
+//             map => map.option?.type?.name === 'Flavor'
+//           ) || v.variant_selection_map?.[0];
+
+//           return {
+//             ...v,
+//             displayName: flavorOption ? flavorOption.option.name : (v.sku ? v.sku.split('--')[1]?.replace(/_/g, ' ') : "Pure Extract")
+//           };
+//         });
+//         setVariants(processed);
+//       }
+//       setLoading(false);
+//     };
+//     fetchVariants();
+//   }, []);
+
+//   if (loading) return null;
+
+//   return (
+//     <section className="bg-black py-16 px-4">
+//       <div className="max-w-7xl mx-auto">
+//         {/* Header Section */}
+//         <div className="text-center mb-12">
+//           <h2 className="text-4xl md:text-6xl font-black text-white mb-4 tracking-tighter italic">
+//             PURE. PRECISE. <span className="text-[#009DDC]">POTENT.</span>
+//           </h2>
+//           <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+//             7Tabz purifies and packages Kratom's most powerful ingredients into delicious tablets and shots.
+//           </p>
+//         </div>
+
+//         {/* Scrollable Container */}
+//         <div className="flex overflow-x-auto pb-8 gap-4 md:gap-6 snap-x no-scrollbar">
+//           {variants.map((variant, index) => (
+//             <div key={variant.id} className="min-w-[280px] md:min-w-[300px] flex-1 snap-start">
+//               <VariantCard variant={variant} idx={index} />
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       <style jsx>{`
+//         .no-scrollbar::-webkit-scrollbar { display: none; }
+//         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+//       `}</style>
+//     </section>
+//   );
+// };
+
+// const VariantCard = ({ variant, idx }) => {
+//   const styles = getBrandStyles(variant.product?.name);
+
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0, y: 20 }}
+//       whileInView={{ opacity: 1, y: 0 }}
+//       viewport={{ once: true }}
+//       transition={{ delay: idx * 0.1 }}
+//       className="bg-white rounded-xl overflow-hidden flex flex-col h-full shadow-2xl"
+//     >
+//       {/* 1. Header Badge Area */}
+//       <div className={`${styles.bg} p-3 flex items-center justify-between text-white uppercase tracking-tighter`}>
+//         <div className="flex items-center gap-2">
+//           <span className="text-xl font-bold">{styles.icon}</span>
+//           <div className="flex flex-col">
+//             <span className="text-[10px] font-bold leading-none opacity-90">Strength Level</span>
+//             <span className="text-xs font-black leading-none">{variant.product?.name?.split(' ')[0] || 'Premium'}</span>
+//           </div>
+//         </div>
+//         <div className="text-right">
+//             <span className="text-[10px] block font-bold opacity-80 leading-none">Formulation</span>
+//             <span className="text-[10px] font-black leading-none">Lab Certified</span>
+//         </div>
+//       </div>
+
+//       {/* 2. Content Body */}
+//       <div className="p-5 flex flex-col items-center flex-grow text-center">
+//         {/* Product Image */}
+//         <div className="relative w-full aspect-square mb-6 group cursor-pointer">
+//           <img 
+//             src={variant.image_url || DUMMY_IMAGE} 
+//             alt={variant.displayName}
+//             className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-2xl"
+//           />
+//         </div>
+
+//         {/* Title Area */}
+//         <h3 className="text-xl font-black text-gray-900 mb-2 leading-none uppercase">
+//           {variant.product?.name}
+//         </h3>
+//         <p className="text-gray-500 text-xs mb-6 line-clamp-2 px-2">
+//           {variant.product?.description || "Precisely formulated high-purity extract tablets."}
+//         </p>
+
+//         {/* Action Button */}
+//         <div className="w-full mt-auto">
+//           <Link to={`/product/${variant.product?.id}?variant=${variant.id}`} className="block w-full">
+//             <button className={`w-full py-4 rounded-lg border-2 ${styles.border} ${styles.bg.replace('bg-', 'text-')} font-black uppercase text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors group`}>
+//               Shop {variant.displayName}
+//               <span className="group-hover:translate-x-1 transition-transform">→</span>
+//             </button>
+//           </Link>
+//         </div>
+//       </div>
+//     </motion.div>
+//   );
+// };
+
+// export default FeaturedProducts;
+
+// import React, { useState, useEffect } from 'react';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+// import { Link } from 'react-router-dom';
+// import { getPromoBanners } from '../../api/mainBannerApi';
+
+// const PromoCarousel = () => {
+//   const [banners, setBanners] = useState([]);
+//   const [currentIndex, setCurrentIndex] = useState(0);
+//   const [loading, setLoading] = useState(true);
+
+//   // 1. Fetch Data
+//   useEffect(() => {
+//     const loadBanners = async () => {
+//       const data = await getPromoBanners();
+//       setBanners(data);
+//       setLoading(false);
+//     };
+//     loadBanners();
+//   }, []);
+
+//   // 2. Auto-Rotation Timer
+//   useEffect(() => {
+//     if (banners.length <= 1) return;
+//     const timer = setInterval(() => {
+//       nextSlide();
+//     }, 6000); // Change every 6 seconds
+//     return () => clearInterval(timer);
+//   }, [currentIndex, banners.length]);
+
+//   const nextSlide = () => {
+//     setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
+//   };
+
+//   const prevSlide = () => {
+//     setCurrentIndex((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
+//   };
+
+//   if (loading) return null; // Or a skeleton loader
+//   if (banners.length === 0) return null;
+
+//   return (
+//     <div className="relative group w-full overflow-hidden bg-dark-950">
+      
+//       {/* ASPECT RATIO CONTAINER */}
+//       {/* Mobile: h-[50vh], Desktop: h-[600px] or dynamic based on content */}
+//       <div className="relative w-full h-[50vh] md:h-[600px]">
+//         <AnimatePresence mode='wait'>
+//           <motion.div
+//             key={currentIndex}
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//             transition={{ duration: 0.7 }}
+//             className="absolute inset-0 w-full h-full"
+//           >
+//             <SlideContent banner={banners[currentIndex]} />
+//           </motion.div>
+//         </AnimatePresence>
+
+//         {/* GRADIENT OVERLAY (Text Readability) */}
+//         <div className="absolute inset-0 bg-gradient-to-t from-dark-950/80 via-transparent to-transparent pointer-events-none" />
+//       </div>
+
+//       {/* NAVIGATION CONTROLS (Only if > 1 slide) */}
+//       {banners.length > 1 && (
+//         <>
+//           {/* Arrows - Hidden on Mobile, Visible on Hover Desktop */}
+//           <button 
+//             onClick={prevSlide}
+//             className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-brand-glow hover:text-dark-900 hidden md:flex"
+//           >
+//             <ChevronLeft size={24} />
+//           </button>
+//           <button 
+//             onClick={nextSlide}
+//             className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-brand-glow hover:text-dark-900 hidden md:flex"
+//           >
+//             <ChevronRight size={24} />
+//           </button>
+
+//           {/* Dots Indicator */}
+//           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+//             {banners.map((_, idx) => (
+//               <button
+//                 key={idx}
+//                 onClick={() => setCurrentIndex(idx)}
+//                 className={`h-1.5 rounded-full transition-all duration-300 ${
+//                   idx === currentIndex ? 'w-8 bg-brand-glow' : 'w-2 bg-white/30 hover:bg-white'
+//                 }`}
+//               />
+//             ))}
+//           </div>
+//         </>
+//       )}
+//     </div>
+//   );
+// };
+
+// // --- SUB-COMPONENT: HANDLES MEDIA TYPES ---
+// const SlideContent = ({ banner }) => {
+//   const ContentWrapper = banner.link_url ? Link : 'div';
+//   const props = banner.link_url ? { to: banner.link_url } : {};
+
+//   return (
+//     <ContentWrapper {...props} className="block w-full h-full relative">
+//       {banner.media_type === 'video' ? (
+//         <video
+//           src={banner.media_url}
+//           className="w-full h-full object-cover"
+//           autoPlay
+//           muted
+//           loop
+//           playsInline // CRITICAL for iOS
+//         />
+//       ) : (
+//         <img
+//           src={banner.media_url}
+//           alt={banner.title}
+//           className="w-full h-full object-cover"
+//           loading="eager" // Load current slide immediately
+//         />
+//       )}
+      
+//       {/* OPTIONAL: TEXT OVERLAY IF YOU WANT IT OVER THE BANNER */}
+//       {/* <div className="absolute bottom-12 left-4 md:left-12 z-10 max-w-xl">
+//          <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter drop-shadow-lg">
+//            {banner.title}
+//          </h2>
+//       </div> */}
+//     </ContentWrapper>
+//   );
+// };
+
+// export default PromoCarousel;

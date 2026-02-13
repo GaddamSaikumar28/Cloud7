@@ -34,6 +34,7 @@ const AdminLayout = () => {
     { icon: ClipboardList, label: 'Inventory', path: '/admin/inventory' },
     { icon: Wallet, label: 'Financials', path: '/admin/payments' },
     { icon: MessageSquare, label: 'Reviews', path: '/admin/reviews' },
+    { icon: LayoutTemplate, label: 'Marquee', path: '/admin/photo-marquee' },
     { icon: Microscope, label: 'Lab Reports', path: '/admin/lab-config' },
     { icon: MessageSquare, label: 'Messages & FAQ', path: '/admin/contact' },
     { icon: LayoutTemplate, label: 'Hero Editor', path: '/admin/hero' },
