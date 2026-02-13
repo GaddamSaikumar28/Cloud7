@@ -17,11 +17,12 @@ import LabPreview from '../components/home/LabPreview';     // <--- NEW: Lab/Sci
 import JournalSection from '../components/home/JournalSection'; // <--- NEW: Blog/Articles
 import Comparison from '../components/home/Comparision';
 import PhotoMarquee from '../components/home/PhotoMarquee';
+import LeadGenModal from '../components/home/LeadGenModal';
 const Home = () => {
   return (
     // Base layout: Simple dark background
     <div className="min-h-screen bg-dark-950 text-white selection:bg-brand-glow selection:text-dark-900">
-      
+      <LeadGenModal />
       {/* 1. HERO & PROMO */}
       <section className="relative z-0">
          <PromoCarousel />
