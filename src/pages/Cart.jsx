@@ -95,8 +95,8 @@ console.log(cartItems);
         {/* LEFT COLUMN: Cart Items */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">Your Cart</h1>
-            <span className="text-slate-400 font-mono text-sm">{analyzedItems.length} ITEMS</span>
+            <h1 className="text-xl font-normal text-white uppercase tracking-tighter">Your Cart</h1>
+            <span className="text-slate-400 font-normal text-sm">{analyzedItems.length} ITEMS</span>
           </div>
 
           <AnimatePresence mode="popLayout">
@@ -231,7 +231,7 @@ console.log(cartItems);
         {/* RIGHT COLUMN: Summary */}
         <aside className="lg:col-span-1">
             <div className="sticky top-32 bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
-                <h2 className="text-xl font-black text-white uppercase italic tracking-wider mb-6">Order Summary</h2>
+                <h2 className="text-xl font-black text-white uppercase tracking-wider mb-6">Order Summary</h2>
                 
                 <div className="space-y-4 mb-8">
                     <div className="flex justify-between text-slate-400 text-sm">

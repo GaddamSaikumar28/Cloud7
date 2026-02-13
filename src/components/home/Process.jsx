@@ -49,7 +49,7 @@ const Process = () => {
                whileInView={{ opacity: 1, y: 0 }}
                viewport={{ once: true }}
             >
-                <h2 className="text-4xl md:text-6xl font-black text-white mb-4 italic tracking-tighter uppercase">
+                <h2 className="text-4xl md:text-6xl font-black text-white mb-4 tracking-tighter uppercase">
                    {content.heading}
                 </h2>
                 <p className="text-slate-400 text-lg font-light tracking-wide">

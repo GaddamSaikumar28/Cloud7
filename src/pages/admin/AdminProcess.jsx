@@ -149,7 +149,7 @@ const AdminProcess = () => {
       {/* HEADER */}
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Process Config</h1>
+          <h1 className="text-3xl font-black uppercase tracking-tighter mb-2">Process Config</h1>
           <p className="text-slate-400">Manage the "How it Works" animated steps.</p>
         </div>
       </div>
@@ -244,7 +244,7 @@ const AdminProcess = () => {
                     );
                  })}
                  {steps.length === 0 && (
-                    <div className="p-12 text-center text-slate-500 italic">
+                    <div className="p-12 text-center text-slate-500">
                        No steps yet. Save the header, then click "Add Step".
                     </div>
                  )}

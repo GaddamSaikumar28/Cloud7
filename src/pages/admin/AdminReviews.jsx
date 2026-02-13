@@ -89,7 +89,7 @@ const AdminReviews = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-4 shrink-0">
         <div>
-           <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase">Review Moderation</h1>
+           <h1 className="text-3xl font-black text-white tracking-tighter uppercase">Review Moderation</h1>
            <p className="text-slate-400 text-sm">Manage customer feedback and reputation.</p>
         </div>
         <div className="flex gap-2 text-xs font-mono text-slate-500">

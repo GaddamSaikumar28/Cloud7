@@ -124,7 +124,7 @@ const AdminLabConfig = () => {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Lab & Image Config</h1>
+          <h1 className="text-3xl font-black uppercase tracking-tighter mb-2">Lab & Image Config</h1>
           <p className="text-slate-400">Manage COAs, Batch IDs, and Product Variant Images.</p>
         </div>
         <div className="relative">

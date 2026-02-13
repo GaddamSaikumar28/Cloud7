@@ -73,7 +73,7 @@ const CTASection = () => {
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="text-5xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-[0.9]"
+                    className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-[0.9]"
                   >
                      {content.heading_line_1} <br/>
                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-blue-400">
@@ -143,7 +143,7 @@ const CTASection = () => {
                         "{content.review_title}"
                       </h3>
                       
-                      <p className="text-slate-300 text-sm italic leading-relaxed">
+                      <p className="text-slate-300 text-sm leading-relaxed">
                         {content.review_quote}
                       </p>
                       

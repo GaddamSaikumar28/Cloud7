@@ -111,7 +111,7 @@ const AdminCTA = () => {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
         <div>
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Home CTA Config</h1>
+          <h1 className="text-3xl font-black uppercase tracking-tighter mb-2">Home CTA Config</h1>
           <p className="text-slate-400">Manage the "Level Up Your Biology" section.</p>
         </div>
         <button 
@@ -198,7 +198,7 @@ const AdminCTA = () => {
              </div>
 
              <div className="flex flex-wrap gap-2">
-                {formData.features.length === 0 && <span className="text-slate-500 text-xs italic">No tags added yet.</span>}
+                {formData.features.length === 0 && <span className="text-slate-500 text-xs">No tags added yet.</span>}
                 
                 {formData.features.map((feat, idx) => (
                   <span key={idx} className="inline-flex items-center gap-2 px-3 py-1 bg-brand-glow/10 border border-brand-glow/20 rounded-lg text-brand-glow text-xs font-bold uppercase">
@@ -267,7 +267,7 @@ const AdminCTA = () => {
                     ))}
                  </div>
                  <h4 className="text-white font-bold mb-2">"{formData.review_title || 'Title'}"</h4>
-                 <p className="text-slate-400 text-xs italic mb-4">"{formData.review_quote || 'Quote text...'}"</p>
+                 <p className="text-slate-400 text-xs mb-4">"{formData.review_quote || 'Quote text...'}"</p>
                  <span className="text-[10px] text-brand-glow font-bold uppercase tracking-widest bg-brand-glow/10 px-2 py-1 rounded">
                     {formData.review_author_label}
                  </span>

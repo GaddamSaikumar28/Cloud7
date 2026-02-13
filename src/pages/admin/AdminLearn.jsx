@@ -126,7 +126,7 @@ const AdminLearn = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Research Hub Config</h1>
+          <h1 className="text-3xl font-black uppercase tracking-tighter mb-2">Research Hub Config</h1>
           <p className="text-slate-400">Manage articles and company mission values.</p>
         </div>
         <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">

@@ -119,7 +119,7 @@ const AdminBanner = () => {
       {/* HEADER */}
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Infinite Banner</h1>
+          <h1 className="text-3xl font-black uppercase tracking-tighter mb-2">Infinite Banner</h1>
           <p className="text-slate-400">Manage the scrolling text and icons on the homepage.</p>
         </div>
         <button 
@@ -180,7 +180,7 @@ const AdminBanner = () => {
              );
           })}
           {items.length === 0 && (
-             <div className="p-8 text-center text-slate-500 italic">No banner items found. Add one to start.</div>
+             <div className="p-8 text-center text-slate-500">No banner items found. Add one to start.</div>
           )}
         </div>
       </div>

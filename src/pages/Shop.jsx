@@ -222,7 +222,7 @@ const Shop = () => {
             className="text-center py-20 border border-dashed border-white/10 rounded-3xl bg-white/5"
           >
             <Zap size={48} className="text-slate-600 mx-auto mb-4" />
-            <h3 className="text-3xl font-bold text-white mb-2 italic tracking-tight">System Empty</h3>
+            <h3 className="text-3xl font-bold text-white mb-2 tracking-tight">System Empty</h3>
             <p className="text-slate-500 mb-8">No protocols match your search criteria.</p>
             <button 
               onClick={() => { setActiveCategory('All'); setSearchQuery(''); }}

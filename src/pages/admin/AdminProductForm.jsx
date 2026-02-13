@@ -223,7 +223,7 @@ const AdminProductForm = () => {
           <button type="button" onClick={() => navigate('/admin/products')} className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white">
             <ArrowLeft size={20} />
           </button>
-          <h1 className="text-2xl font-black text-white italic uppercase">{isEditing ? 'Edit Protocol' : 'New Protocol'}</h1>
+          <h1 className="text-2xl font-black text-white uppercase">{isEditing ? 'Edit Protocol' : 'New Protocol'}</h1>
         </div>
         <button type="submit" disabled={saving} className="px-8 py-3 bg-brand-glow text-dark-900 font-bold rounded-xl flex items-center gap-2 hover:scale-105 transition-transform disabled:opacity-50">
            {saving ? <Loader2 className="animate-spin"/> : <Save size={18} />} Save Config

@@ -38,7 +38,7 @@ const LabReports = () => {
       
       {/* HEADER SECTION */}
       <div className="pt-24 pb-8 px-4 text-center">
-        <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter mb-4">
+        <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">
           Lab <span className="text-brand-glow">Results</span>
         </h1>
         <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto mb-8">

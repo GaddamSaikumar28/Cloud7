@@ -49,7 +49,7 @@ const AdminProducts = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-4 shrink-0">
         <div>
-           <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase">Product Inventory</h1>
+           <h1 className="text-3xl font-black text-white tracking-tighter uppercase">Product Inventory</h1>
            <p className="text-slate-400 text-sm">Manage catalogs, stock levels, and SKUs.</p>
         </div>
         <Link to="/admin/products/new" className="px-6 py-3 bg-brand-glow text-dark-900 font-bold rounded-xl flex items-center gap-2 hover:brightness-110 transition-all hover:scale-105 active:scale-95">

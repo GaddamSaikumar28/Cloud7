@@ -63,7 +63,7 @@ const AdminLayout = () => {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-glow to-blue-600 flex items-center justify-center">
             <ShieldAlert size={18} className="text-white" />
           </div>
-          <span className="font-black italic tracking-tighter text-xl">Cloud7 ADMIN</span>
+          <span className="font-black tracking-tighter text-xl">Cloud7 ADMIN</span>
         </div>
 
         {/* Scrollable Navigation */}

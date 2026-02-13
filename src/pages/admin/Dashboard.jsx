@@ -47,7 +47,7 @@ const Dashboard = () => {
         className="flex flex-col md:flex-row justify-between items-end gap-4"
       >
         <div>
-          <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase">Overview</h1>
+          <h1 className="text-3xl font-black text-white tracking-tighter uppercase">Overview</h1>
           <p className="text-slate-400 text-sm mt-1">Real-time platform analytics and performance metrics.</p>
         </div>
         <div className="flex items-center gap-2 text-xs font-mono text-brand-glow bg-brand-glow/10 px-3 py-1 rounded-full border border-brand-glow/20 animate-pulse">

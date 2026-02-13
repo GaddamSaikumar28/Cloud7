@@ -133,7 +133,7 @@ const AdminNavigation = () => {
       
       {/* Header */}
       <div className="mb-10">
-        <h1 className="text-4xl font-black italic uppercase tracking-tighter mb-2">Navigation Config</h1>
+        <h1 className="text-4xl font-black uppercase tracking-tighter mb-2">Navigation Config</h1>
         <p className="text-slate-400">Manage your site logo and main menu links.</p>
       </div>
 
@@ -230,7 +230,7 @@ const AdminNavigation = () => {
          </div>
 
          <div className="space-y-4">
-            {links.length === 0 && <p className="text-slate-500 italic text-center py-8">No links configured.</p>}
+            {links.length === 0 && <p className="text-slate-500 text-center py-8">No links configured.</p>}
             
             {links.map((link, idx) => (
                <div key={idx} className="bg-dark-950 p-4 rounded-xl border border-white/5 flex flex-col md:flex-row gap-4 items-center group hover:border-white/20 transition-colors">

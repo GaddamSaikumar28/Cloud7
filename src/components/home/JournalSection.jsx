@@ -135,7 +135,7 @@ const JournalSection = () => {
                         The Cloud7 Journal
                     </span>
                 </span>
-                <h2 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-6">
+                <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6">
                     LATEST <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow via-purple-500 to-pink-500">INTEL</span>
                 </h2>
             </div>

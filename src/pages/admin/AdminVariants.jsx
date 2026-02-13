@@ -106,7 +106,7 @@ const AdminVariants = () => {
     <div className="p-6 md:p-12 min-h-screen bg-dark-900 text-white">
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Attributes</h1>
+          <h1 className="text-3xl font-black uppercase tracking-tighter mb-2">Attributes</h1>
           <p className="text-slate-400">Configure global product options (Sizes, Flavors, Colors).</p>
         </div>
         <button 

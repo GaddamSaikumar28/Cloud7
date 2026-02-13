@@ -86,7 +86,7 @@ const CommunityFeedback = () => {
                     transition={{ delay: 0.1 }}
                     className="text-4xl md:text-5xl font-light text-white"
                 >
-                    Voices of <span className="font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">Customers</span>
+                    Voices of <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">Customers</span>
                 </motion.h2>
             </div>
             

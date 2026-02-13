@@ -48,7 +48,7 @@ const AdminOrders = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-4">
         <div>
-           <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase">Order Management</h1>
+           <h1 className="text-3xl font-black text-white tracking-tighter uppercase">Order Management</h1>
            <p className="text-slate-400 text-sm">Track and fulfill customer orders.</p>
         </div>
       </div>

@@ -87,7 +87,7 @@ const AdminFooter = () => {
     <div className="p-6 md:p-12 min-h-screen bg-dark-900 text-white pb-32">
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Footer Config</h1>
+          <h1 className="text-3xl font-black uppercase tracking-tighter mb-2">Footer Config</h1>
           <p className="text-slate-400">Manage footer content, links, and social icons.</p>
         </div>
       </div>

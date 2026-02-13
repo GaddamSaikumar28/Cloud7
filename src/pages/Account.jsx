@@ -205,7 +205,7 @@ const Account = () => {
                 initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                 className="space-y-6"
               >
-                <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter mb-6">Your Orders</h2>
+                <h2 className="text-2xl font-black text-white uppercase tracking-tighter mb-6">Your Orders</h2>
                 
                 {orders.length === 0 ? (
                     <div className="bg-white/5 border border-white/10 rounded-3xl p-12 text-center">
@@ -235,7 +235,7 @@ const Account = () => {
                 initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
               >
                 <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
-                  <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter mb-8">Account Settings</h2>
+                  <h2 className="text-2xl font-black text-white uppercase tracking-tighter mb-8">Account Settings</h2>
                   <form onSubmit={handleUpdateProfile} className="space-y-8">
                     <div className="space-y-4">
                         <h3 className="text-xs font-bold text-brand-glow uppercase tracking-widest flex items-center gap-2"><User size={14}/> Personal Information</h3>

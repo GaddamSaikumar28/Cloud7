@@ -220,7 +220,7 @@ console.log('checkout page',cartItems);
 
           {/* Header (Sticky) */}
           <div className="p-8 pb-4 relative z-10 shrink-0">
-             <h3 className="text-white font-black text-lg uppercase italic tracking-wider flex items-center gap-2">
+             <h3 className="text-white font-black text-lg uppercase tracking-wider flex items-center gap-2">
                <ShoppingBag size={18} className="text-brand-glow"/> Order Summary
              </h3>
           </div>
@@ -284,7 +284,7 @@ console.log('checkout page',cartItems);
           {/* Header (Sticky) */}
           <div className="p-6 md:p-8 flex justify-between items-center border-b border-white/5 shrink-0 bg-dark-900 z-20">
              <div>
-                <h2 className="text-2xl font-black text-white italic tracking-tighter uppercase">
+                <h2 className="text-2xl font-black text-white tracking-tighter uppercase">
                   {success ? 'Order Confirmed' : (step === 1 ? 'Shipping Info' : 'Payment')}
                 </h2>
                 {!success && <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Step {step} of 2</p>}
@@ -307,7 +307,7 @@ console.log('checkout page',cartItems);
                    <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(34,197,94,0.4)]">
                      <Check size={48} className="text-dark-900 stroke-[4]" />
                    </div>
-                   <h3 className="text-3xl font-black text-white uppercase italic tracking-tight mb-2">Success!</h3>
+                   <h3 className="text-3xl font-black text-white uppercase tracking-tight mb-2">Success!</h3>
                    <p className="text-slate-400 max-w-xs mx-auto mb-8">
                      Your order has been placed. A confirmation email has been sent to <span className="text-white">{formData.email}</span>.
                    </p>

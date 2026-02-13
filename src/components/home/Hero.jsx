@@ -100,7 +100,7 @@ const Hero = () => {
             // initial={{ opacity: 0, scale: 0.9 }}
             // animate={{ opacity: 1, scale: 1 }}
             // transition={{ duration: 1, ease: "easeOut" }}
-            className="text-6l md:text-7xl lg:text-9l font-black italic tracking-tighter leading-[0.85] text-white mb-6 drop-shadow-2xl"
+            className="text-6l md:text-7xl lg:text-9l font-black tracking-tighter leading-[0.85] text-white mb-6 drop-shadow-2xl"
           >
             {content.headline}
           </motion.h1>

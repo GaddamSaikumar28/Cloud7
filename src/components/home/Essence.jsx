@@ -125,7 +125,7 @@ const Essence = () => {
 
                 <h2 className="text-4xl md:text-5xl font-light text-white mb-8 leading-tight">
                     {content.heading.split(' ').map((word, i) => (
-                        <span key={i} className={i % 2 !== 0 ? "font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400" : ""}>
+                        <span key={i} className={i % 2 !== 0 ? "font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400" : ""}>
                             {word} 
                         </span>
                     ))}{" "}

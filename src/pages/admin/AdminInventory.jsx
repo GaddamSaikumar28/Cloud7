@@ -119,7 +119,7 @@ const AdminInventory = () => {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Inventory</h1>
+          <h1 className="text-3xl font-black uppercase tracking-tighter mb-2">Inventory</h1>
           <p className="text-slate-400">Real-time stock management across all active variants.</p>
         </div>
 
@@ -184,7 +184,7 @@ const AdminInventory = () => {
          {/* ROWS */}
          <div className="divide-y divide-white/5 max-h-[600px] overflow-y-auto custom-scrollbar">
             {filteredInventory.length === 0 ? (
-               <div className="p-12 text-center text-slate-500 italic">No inventory found matching your filters.</div>
+               <div className="p-12 text-center text-slate-500">No inventory found matching your filters.</div>
             ) : (
                filteredInventory.map(item => {
                   const isDirty = !!edits[item.id]; // Has unsaved changes?

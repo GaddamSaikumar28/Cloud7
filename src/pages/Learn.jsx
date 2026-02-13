@@ -75,7 +75,7 @@ const Learn = () => {
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
                transition={{ delay: 0.2 }}
-               className="text-5xl md:text-8xl font-black italic tracking-tighter uppercase mb-6"
+               className="text-5xl md:text-8xl font-black tracking-tighter uppercase mb-6"
             >
                Research <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-blue-500">&</span><br/>
                <span className="text-white">Development</span>
@@ -130,12 +130,12 @@ const Learn = () => {
                   className="text-4xl md:text-5xl font-bold mb-8 leading-tight"
                >
                   We are <span className="text-brand-glow">Cloud7</span>. <br/>
-                  <span className="font-light italic text-slate-400">Architects of Biology.</span>
+                  <span className="font-light text-slate-400">Architects of Biology.</span>
                </motion.h2>
 
                <div className="space-y-8">
                   {values.length === 0 && (
-                     <p className="text-slate-500 italic">No company values found. Add them in the Admin Panel.</p>
+                     <p className="text-slate-500">No company values found. Add them in the Admin Panel.</p>
                   )}
                   {values.map((val, idx) => {
                      // Dynamic Icon Mapping

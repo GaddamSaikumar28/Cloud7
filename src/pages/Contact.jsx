@@ -103,7 +103,7 @@ const Contact = () => {
         
         {/* HERO HEADER */}
         <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4">
+            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-4">
                 Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-blue-500">Touch</span>
             </h1>
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
@@ -265,7 +265,7 @@ const Contact = () => {
                         </div>
                     ))}
                     {faqs.length === 0 && (
-                         <div className="text-slate-500 text-sm italic">No FAQs configured yet.</div>
+                         <div className="text-slate-500 text-sm">No FAQs configured yet.</div>
                     )}
                 </div>
 
