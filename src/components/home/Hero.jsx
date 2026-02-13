@@ -81,7 +81,7 @@ const Hero = () => {
         {/* Subtle Gradient Spot */}
         <motion.div 
           animate={{ opacity: [0.15, 0.3, 0.15], scale: [1, 1.2, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] rounded-full blur-[150px]"
           style={{ backgroundColor: glowColor }}
         />
